@@ -75,6 +75,7 @@ Mozilla presents an HTML5 mini-MMORPG by Little Workshop http://www.littleworksh
                              <div></div>
                          </div>
                          <form action="none" method="get" accept-charset="utf-8">
+                             <label id="name-tooltip" for="player">Try to think of a cool nickname!</label>
                              <input type="text" id="nameinput" class="stroke" name="player-name" placeholder="Name your character" maxlength="15">
                          </form>
                          <div class="play button disabled">
@@ -104,7 +105,7 @@ Mozilla presents an HTML5 mini-MMORPG by Little Workshop http://www.littleworksh
                              <img src="img/common/spinner.gif" alt="">
                          </div>
                          <div id="create-new">
-                            <span><span>or</span> create a new character</span>
+                            <span><span>or</span> reset your character</span>
                          </div>
                     </article>
                     <article id="confirmation">
@@ -283,7 +284,7 @@ Mozilla presents an HTML5 mini-MMORPG by Little Workshop http://www.littleworksh
     			</div>
 				<div id="chatbox">
 				    <form action="none" method="get" accept-charset="utf-8">
-					    <input id="chatinput" class="gp" type="text" maxlength="60">
+					    <input id="chatinput" class="gp placeholder" type="text" maxlength="60" placeholder="What do you want to say? (Remember to protect your privacy!)">
 				    </form>
 				</div>
                 <div id="population">
