@@ -19,8 +19,9 @@ function mergeSettings(base, merge) {
 function main() {
     var args = minimist(process.argv.slice(2));
     if (args.help) {
-        console.log('USAGE: run.js [--help] [--host HOST] [--port PORT] ' +
-            '[--world-count INT] [--world-capacity INT] [--log-level LEVEL]');
+        console.log('USAGE: run.js [--help] [--config FILE] [--host HOST] ' +
+            '[--port PORT] [--world-count INT] [--world-capacity INT] ' +
+            '[--log-level LEVEL]');
         return;
     }
     var settings = {
@@ -32,6 +33,9 @@ function main() {
     };
     var defaults = JSON.parse(fs.readFileSync(path.join(SERVER_DIR,
                                                         'config.json')));
+    if (args.config) {
+        mergeSettings(defaults, JSON.parse(fs.readFileSync(args.config)));
+    }
     settings = mergeSettings(defaults, settings);
     fs.writeFileSync(path.join(SERVER_DIR, 'config_local.json'),
                      JSON.stringify(settings, null, 4) + '\n');
