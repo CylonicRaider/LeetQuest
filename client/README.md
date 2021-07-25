@@ -10,11 +10,7 @@ Edit the contents of this file to change host/port settings.
 
 2) Run the following commands from the project root:
 
-(Note: nodejs is required to run the build script)
-
-* cd bin
-* chmod +x build.sh
-* ./build.sh
+* node bin/build-client.js
 
 This will use the RequireJS optimizer tool to create a client-build/ directory containing a production-ready version of BrowserQuest. 
 
