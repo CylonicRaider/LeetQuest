@@ -11,5 +11,8 @@
         "sanitizer": "^0.0.15",
         "memcache": "^0.3.0",
         "express": "^4.16.3"
+    },
+    "scripts": {
+        "build": "node bin/build.js"
     }
 }
