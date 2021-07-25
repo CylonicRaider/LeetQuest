@@ -8,7 +8,8 @@ function main(config) {
         WorldServer = require("./worldserver"),
         Log = require('log'),
         _ = require('underscore'),
-        server = new ws.MultiVersionWebsocketServer(config.port),
+        server = new ws.MultiVersionWebsocketServer(config.port,
+                                                    config.host || null),
         metrics = config.metrics_enabled ? new Metrics(config) : null;
         worlds = [],
         lastTotalPlayers = 0,

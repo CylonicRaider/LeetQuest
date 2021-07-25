@@ -19,6 +19,7 @@ function mergeSettings(base, merge) {
 function main() {
     var args = minimist(process.argv.slice(2));
     var settings = {
+        host: args.host,
         port: args.port,
         nb_worlds: args['world-count'],
         nb_players_per_world: args['world-size'],

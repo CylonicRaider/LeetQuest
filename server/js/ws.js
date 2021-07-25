@@ -19,8 +19,9 @@ module.exports = WS;
  * Abstract Server and Connection classes
  */
 var Server = cls.Class.extend({
-    init: function(port) {
+    init: function(port, host) {
         this.port = port;
+        this.host = host;
     },
     
     onConnect: function(callback) {
@@ -113,10 +114,10 @@ WS.MultiVersionWebsocketServer = Server.extend({
     _connections: {},
     _counter: 0,
     
-    init: function(port) {
+    init: function(port, host) {
         var self = this;
         
-        this._super(port);
+        this._super(port, host);
         
         this._httpServer = http.createServer(function(request, response) {
             var path = url.parse(request.url).pathname;
@@ -133,8 +134,8 @@ WS.MultiVersionWebsocketServer = Server.extend({
             }
             response.end();
         });
-        this._httpServer.listen(port, function() {
-            log.info("Server is listening on port "+port);
+        this._httpServer.listen(port, host, function() {
+            log.info("Server is listening on host "+(host||"*")+" port "+port);
         });
         
         this._miksagoServer = wsserver.createServer();
