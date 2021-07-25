@@ -24,6 +24,10 @@ function main() {
             '[--log-level LEVEL]');
         return;
     }
+    if (args.config) {
+        var configData = JSON.parse(fs.readFileSync(args.config));
+        args = mergeSettings(configData, args);
+    }
     var settings = {
         host: args.host,
         port: args.port,
@@ -33,9 +37,6 @@ function main() {
     };
     var defaults = JSON.parse(fs.readFileSync(path.join(SERVER_DIR,
                                                         'config.json')));
-    if (args.config) {
-        mergeSettings(defaults, JSON.parse(fs.readFileSync(args.config)));
-    }
     settings = mergeSettings(defaults, settings);
     fs.writeFileSync(path.join(SERVER_DIR, 'config_local.json'),
                      JSON.stringify(settings, null, 4) + '\n');
