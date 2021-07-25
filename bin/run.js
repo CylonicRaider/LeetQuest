@@ -31,7 +31,7 @@ function main() {
     fs.writeFileSync(path.join(SERVER_DIR, 'config_local.json'),
                      JSON.stringify(settings, null, 4) + '\n');
     child_process.spawnSync('node', [path.join(SERVER_DIR, 'js/main.js')],
-                            {cwd: path.join(SERVER_DIR, '..')});
+        {cwd: path.join(SERVER_DIR, '..'), stdio: 'inherit'});
 }
 
 main();

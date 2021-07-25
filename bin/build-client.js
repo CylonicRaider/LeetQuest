@@ -31,7 +31,7 @@ fs.rmSync(BUILD_DIR, {force: true, recursive: true});
 
 console.log('Building client...');
 child_process.spawnSync('node', ['../../bin/r.js', '-o', 'build.js'],
-                        {cwd: PROJECT_DIR});
+                        {cwd: PROJECT_DIR, stdio: 'inherit'});
 
 console.log('Removing unnecessary files...');
 adjustPath(BUILD_DIR, {
