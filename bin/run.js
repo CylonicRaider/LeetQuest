@@ -18,11 +18,16 @@ function mergeSettings(base, merge) {
 
 function main() {
     var args = minimist(process.argv.slice(2));
+    if (args.help) {
+        console.log('USAGE: run.js [--help] [--host HOST] [--port PORT] ' +
+            '[--world-count INT] [--world-capacity INT] [--log-level LEVEL]');
+        return;
+    }
     var settings = {
         host: args.host,
         port: args.port,
         nb_worlds: args['world-count'],
-        nb_players_per_world: args['world-size'],
+        nb_players_per_world: args['world-capacity'],
         debug_level: args['log-level']
     };
     var defaults = JSON.parse(fs.readFileSync(path.join(SERVER_DIR,
