@@ -47,13 +47,16 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
         connect: function(dispatcherMode) {
             var url, self = this;
 
-            url = (location.protocol === 'https') ? 'wss://' : 'ws://';
+            url = (location.protocol === 'https:') ? 'wss://' : 'ws://';
             if (this.port === null) {
-              url += location.hostname + ":" + location.port;
+                url += location.hostname;
+                if (location.port) {
+                     url += ":" + location.port;
+                }
             } else if (this.host === null) {
-              url += location.hostname + ":" + this.port;
+                url += location.hostname + ":" + this.port;
             } else {
-              url += this.host + ":" + this.port;
+                url += this.host + ":" + this.port;
             }
             url += (dispatcherMode) ? "/dispatch" : "/game";
 
