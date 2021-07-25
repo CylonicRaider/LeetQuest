@@ -147,13 +147,15 @@ WS.MultiVersionWebsocketServer = Server.extend({
             connection.sendUTF = connection.send;
             var c = new WS.miksagoWebSocketConnection(self._createId(), connection, self);
             
-            if(self.connection_callback) {
-                self.connection_callback(c);
-            }
-            self.addConnection(c);
+            self._onWSConnection(c, c._req.url);
         });
         
         this._httpServer.on('upgrade', function(req, socket, head) {
+            var path = url.parse(req.url).pathname;
+            if (path !== '/dispatch' && path !== '/game') {
+                socket.close();
+                return;
+            }
             if (typeof req.headers['sec-websocket-version'] !== 'undefined') {
                 // WebSocket hybi-08/-09/-10 connection (WebSocket-Node)
                 var wsRequest = new worlizeRequest(socket, req, self.worlizeServerConfig);
@@ -161,10 +163,7 @@ WS.MultiVersionWebsocketServer = Server.extend({
                     wsRequest.readHandshake();
                     var wsConnection = wsRequest.accept(wsRequest.requestedProtocols[0], wsRequest.origin);
                     var c = new WS.worlizeWebSocketConnection(self._createId(), wsConnection, self);
-                    if(self.connection_callback) {
-                        self.connection_callback(c);
-                    }
-                    self.addConnection(c);
+                    self._onWSConnection(c, path);
                 }
                 catch(e) {
                     console.log("WebSocket Request unsupported by WebSocket-Node: " + e.toString());
@@ -182,6 +181,26 @@ WS.MultiVersionWebsocketServer = Server.extend({
         });
     },
     
+    _onWSConnection: function(c, path) {
+        switch (path) {
+            case '/dispatch':
+                // TODO: Retrieve the host and port the request used and
+                //       reflect them back explicitly.
+                c.send({status: 'OK', host: null, port: null});
+                c.close();
+                return;
+            case '/game':
+                break;
+            default:
+                c.close();
+                return;
+        }
+        if (this.connection_callback) {
+            this.connection_callback(c);
+        }
+        this.addConnection(c);
+    },
+
     _createId: function() {
         return '5' + Utils.random(99) + '' + (this._counter++);
     },

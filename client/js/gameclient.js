@@ -55,7 +55,7 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
             } else {
               url += this.host + ":" + this.port;
             }
-            url += "/ws";
+            url += (dispatcherMode) ? "/dispatch" : "/game";
 
             log.info("Trying to connect to server : "+url);
 
