@@ -6,6 +6,7 @@ var cls = require("./lib/class"),
     worlizeRequest = require('websocket').request,
     http = require('http'),
     Utils = require('./utils'),
+    Static = require('./static'),
     _ = require('underscore'),
     BISON = require('bison'),
     WS = {},
@@ -127,7 +128,8 @@ WS.MultiVersionWebsocketServer = Server.extend({
                         break;
                     }
                 default:
-                    response.writeHead(404);
+                    Static(request, response);
+                    return;
             }
             response.end();
         });

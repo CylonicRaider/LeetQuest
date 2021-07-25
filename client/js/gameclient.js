@@ -45,9 +45,18 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
         },
         
         connect: function(dispatcherMode) {
-            var url = "ws://"+ this.host +":"+ this.port +"/",
-                self = this;
-            
+            var url, self = this;
+
+            url = (location.protocol === 'https') ? 'wss://' : 'ws://';
+            if (this.port === null) {
+              url += location.hostname + ":" + location.port;
+            } else if (this.host === null) {
+              url += location.hostname + ":" + this.port;
+            } else {
+              url += this.host + ":" + this.port;
+            }
+            url += "/ws";
+
             log.info("Trying to connect to server : "+url);
 
             if(window.MozWebSocket) {

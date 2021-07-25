@@ -1,14 +1,15 @@
 {
-    "name": "BrowserQuest"
-  , "version": "0.0.1"
-  , "private": false 
-  , "dependencies": {
-      "underscore": "^1.9.1"
-    , "log": "^1.4.0"
-    , "bison": "^1.1.1"
-    , "websocket": "^1.0.4"
-    , "websocket-server": "ThisIsMissEm/node-websocket-server#v1.4.04"
-    , "sanitizer": "^0.0.15"
-    , "memcache": "^0.3.0"
-  }
+    "name": "BrowserQuest",
+    "version": "0.0.1",
+    "private": false,
+    "dependencies": {
+        "underscore": "^1.9.1",
+        "log": "^1.4.0",
+        "bison": "^1.1.1",
+        "websocket": "^1.0.4",
+        "websocket-server": "ThisIsMissEm/node-websocket-server#v1.4.04",
+        "sanitizer": "^0.0.15",
+        "memcache": "^0.3.0",
+        "express": "^4.16.3"
+    }
 }
