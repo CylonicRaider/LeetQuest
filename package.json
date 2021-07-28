@@ -1,7 +1,6 @@
 {
-    "name": "BrowserQuest",
+    "name": "LeetQuest",
     "version": "0.0.2",
-    "private": false,
     "dependencies": {
         "underscore": "^1.9.1",
         "log": "^1.4.0",
