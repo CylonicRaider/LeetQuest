@@ -1,7 +1,8 @@
-BrowserQuest
-============
+LeetQuest
+=========
 
-BrowserQuest is a HTML5/JavaScript multiplayer game experiment.
+A Web MMORPG forked off
+[BrowserQuest](https://github.com/mozilla/BrowserQuest).
 
 
 Documentation
@@ -30,7 +31,8 @@ See the LICENSE file for details.
 
 Credits
 -------
-Created by [Little Workshop](http://www.littleworkshop.fr):
+
+BrowserQuest was created by [Little Workshop](http://www.littleworkshop.fr):
 
 * Franck Lecollinet - [@whatthefranck](http://twitter.com/whatthefranck)
 * Guillaume Lecollinet - [@glecollinet](http://twitter.com/glecollinet)
