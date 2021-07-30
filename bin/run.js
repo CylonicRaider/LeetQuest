@@ -19,13 +19,13 @@ function mergeSettings(base, merge) {
 function main() {
     var args = minimist(process.argv.slice(2));
     if (args.help) {
-        console.log('USAGE: run.js [--help] [--config FILE] [--host HOST] ' +
-            '[--port PORT] [--world-count INT] [--world-capacity INT] ' +
-            '[--log-level LEVEL]');
+        console.log('USAGE: run.js [--help] [--host HOST] [--port PORT] ' +
+            '[--world-count INT] [--world-capacity INT] ' +
+            '[--log-level LEVEL] [CONFIG_FILE]');
         return;
     }
-    if (args.config) {
-        var configData = JSON.parse(fs.readFileSync(args.config));
+    if (args._.length) {
+        var configData = JSON.parse(fs.readFileSync(args._[0]));
         args = mergeSettings(configData, args);
     }
     var settings = {
