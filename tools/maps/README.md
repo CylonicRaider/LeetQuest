@@ -7,7 +7,7 @@ BrowserQuest map exporter
 Editing the map
 ---------------
 
-Install the Tiled editor: http://www.mapeditor.org/
+Install the [Tiled](https://www.mapeditor.org/) editor.
 
 Open the `tmx/map.tmx` file in Tiled and start editing.
 
@@ -24,7 +24,7 @@ Note: This tool was written with OSX in mind. If you are using a different OS (e
 **Prerequisites:**
 
 - You need python and nodejs installed.
-- Install pip: http://www.pip-installer.org/en/latest/installing.html
+- Install pip: <https://pypi.org/project/pip/>
 - Install lxml: `pip install lxml` (preferably within a virtualenv)
 - Optional: Install Growl + growlnotify if you are on OSX.
 

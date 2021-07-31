@@ -32,7 +32,7 @@ See the LICENSE file for details.
 Credits
 -------
 
-BrowserQuest was created by [Little Workshop](http://www.littleworkshop.fr):
+BrowserQuest was created by [Little Workshop](https://www.littleworkshop.fr):
 
-* Franck Lecollinet - [@whatthefranck](http://twitter.com/whatthefranck)
-* Guillaume Lecollinet - [@glecollinet](http://twitter.com/glecollinet)
+* Franck Lecollinet - [@whatthefranck](https://twitter.com/whatthefranck)
+* Guillaume Lecollinet - [@glecollinet](https://twitter.com/glecollinet)
