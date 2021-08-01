@@ -40,8 +40,10 @@ function main() {
     settings = mergeSettings(defaults, settings);
     fs.writeFileSync(path.join(SERVER_DIR, 'config_local.json'),
                      JSON.stringify(settings, null, 4) + '\n');
-    child_process.spawnSync('node', [path.join(SERVER_DIR, 'js/main.js')],
+    var result = child_process.spawnSync('node',
+        [path.join(SERVER_DIR, 'js/main.js')],
         {cwd: path.join(SERVER_DIR, '..'), stdio: 'inherit'});
+    if (result.status !== 0) process.exit(1);
 }
 
 main();

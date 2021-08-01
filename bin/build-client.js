@@ -30,8 +30,10 @@ console.log('Cleaning up build directory...');
 fs.rmSync(BUILD_DIR, {force: true, recursive: true});
 
 console.log('Building client...');
-child_process.spawnSync('node', ['../../bin/r.js', '-o', 'build.js'],
-                        {cwd: PROJECT_DIR, stdio: 'inherit'});
+var result = child_process.spawnSync('node', ['../../bin/r.js', '-o',
+                                              'build.js'],
+                                     {cwd: PROJECT_DIR, stdio: 'inherit'});
+if (result.status !== 0) process.exit(1);
 
 console.log('Removing unnecessary files...');
 adjustPath(BUILD_DIR, {
