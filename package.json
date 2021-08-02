@@ -10,7 +10,6 @@
         "htmlparser2": "^6.1.0",
         "jquery": "^3.6.0",
         "lodash-es": "^4.17.21",
-        "memcache": "^0.3.0",
         "modernizr-esm": "^2.0.0",
         "pino": "^6.13.0",
         "sanitize-html": "^2.4.0",

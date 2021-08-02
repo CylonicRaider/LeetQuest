@@ -1,14 +1,13 @@
 import { readFile } from "fs";
 import find from "lodash-es/find.js";
 import forEach from "lodash-es/forEach.js";
-import minBy from "lodash-es/minBy.js";
+import map from "lodash-es/map.js";
 import range from "lodash-es/range.js";
-import take from "lodash-es/take.js";
+import sumBy from "lodash-es/sumBy.js";
 
 import log from "./log.js";
 import Player from "./player.js";
 import WorldServer from "./worldserver.js";
-// FIXME: import Metrics from "./metrics.js";
 import { MultiVersionWebsocketServer } from "./ws.js";
 
 function main(config) {
@@ -16,22 +15,7 @@ function main(config) {
             config.port,
             config.host || null,
         ),
-        metrics = null, // FIXME: config.metrics_enabled ? new Metrics(config) : null,
         worlds = [];
-
-    let lastTotalPlayers = 0;
-    const checkPopulationInterval = setInterval(() => {
-        if (metrics && metrics.isReady) {
-            metrics.getTotalPlayers((totalPlayers) => {
-                if (totalPlayers !== lastTotalPlayers) {
-                    lastTotalPlayers = totalPlayers;
-                    forEach(worlds, (world) => {
-                        world.updatePopulation(totalPlayers);
-                    });
-                }
-            });
-        }
-    }, 1000);
 
     log.info("Starting BrowserQuest game server...");
 
@@ -43,21 +27,13 @@ function main(config) {
             }
         };
 
-        if (metrics) {
-            metrics.getOpenWorldCount((open_world_count) => {
-                // choose the least populated world among open worlds
-                world = minBy(take(worlds, open_world_count), "playerCount");
-                connect();
-            });
-        } else {
-            // simply fill each world sequentially until they are full
-            world = find(
-                worlds,
-                (world) => world.playerCount < config.nb_players_per_world,
-            );
-            world.updatePopulation();
-            connect();
-        }
+        // simply fill each world sequentially until they are full
+        world = find(
+            worlds,
+            (world) => world.playerCount < config.nb_players_per_world,
+        );
+        world.updatePopulation();
+        connect();
     });
 
     server.onError((...args) => {
@@ -65,12 +41,10 @@ function main(config) {
     });
 
     const onPopulationChange = () => {
-        metrics.updatePlayerCounters(worlds, (totalPlayers) => {
-            forEach(worlds, (world) => {
-                world.updatePopulation(totalPlayers);
-            });
+        const totalPlayers = sumBy(worlds, "playerCount");
+        forEach(worlds, (world) => {
+            world.updatePopulation(totalPlayers);
         });
-        metrics.updateWorldDistribution(getWorldDistribution(worlds));
     };
 
     forEach(range(config.nb_worlds), (i) => {
@@ -82,19 +56,13 @@ function main(config) {
         );
         world.run(config.map_filepath);
         worlds.push(world);
-        if (metrics) {
-            world.onPlayerAdded(onPopulationChange);
-            world.onPlayerRemoved(onPopulationChange);
-        }
+        world.onPlayerAdded(onPopulationChange);
+        world.onPlayerRemoved(onPopulationChange);
     });
 
     server.onRequestStatus(() => JSON.stringify(getWorldDistribution(worlds)));
 
-    if (config.metrics_enabled) {
-        metrics.ready(() => {
-            onPopulationChange(); // initialize all counters to 0 when the server starts
-        });
-    }
+    onPopulationChange(); // initialize all counters to 0 when the server starts
 
     process.on("uncaughtException", (e) => {
         log.error("uncaughtException: " + e);
@@ -102,12 +70,7 @@ function main(config) {
 }
 
 function getWorldDistribution(worlds) {
-    const distribution = [];
-
-    forEach(worlds, (world) => {
-        distribution.push(world.playerCount);
-    });
-    return distribution;
+    return map(worlds, "playerCount");
 }
 
 function getConfigFile(path, callback) {
