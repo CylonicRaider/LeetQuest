@@ -18,7 +18,7 @@ var DEST_FILE = (mode === 'client') ?
     '../../client/maps/world_client' :
     '../../server/maps/world_server.json';
 
-runCommand(['python2', 'tmx2json.py', SRC_FILE, TEMP_FILE]);
+runCommand(['node', 'tmx2json.js', SRC_FILE, TEMP_FILE]);
 
 runCommand(['node', 'exportmap.js', TEMP_FILE, DEST_FILE, mode]);
 
