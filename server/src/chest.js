@@ -1,22 +1,26 @@
-var Utils = require("./utils"),
-    Types = require("../../shared/js/gametypes");
+import size from "lodash-es/size.js";
 
-module.exports = Chest = Item.extend({
-    init: function (id, x, y) {
-        this._super(id, Types.Entities.CHEST, x, y);
-    },
+import { Entities } from "../../shared/js/gametypes.js";
 
-    setItems: function (items) {
+import Item from "./item.js";
+import * as Utils from "./utils.js";
+
+export default class Chest extends Item {
+    constructor(id, x, y) {
+        super(id, Entities.CHEST, x, y);
+    }
+
+    setItems(items) {
         this.items = items;
-    },
+    }
 
-    getRandomItem: function () {
-        var nbItems = _.size(this.items),
-            item = null;
+    getRandomItem() {
+        const nbItems = size(this.items);
+        let item = null;
 
         if (nbItems > 0) {
             item = this.items[Utils.random(nbItems)];
         }
         return item;
-    },
-});
+    }
+}

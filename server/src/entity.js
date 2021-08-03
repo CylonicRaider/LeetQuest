@@ -1,46 +1,45 @@
-var cls = require("./lib/class"),
-    Messages = require("./message"),
-    Utils = require("./utils");
+import { Spawn, Despawn } from "./message.js";
+import * as Utils from "./utils.js";
 
-module.exports = Entity = cls.Class.extend({
-    init: function (id, type, kind, x, y) {
+export default class Entity {
+    constructor(id, type, kind, x, y) {
         this.id = parseInt(id);
         this.type = type;
         this.kind = kind;
         this.x = x;
         this.y = y;
-    },
+    }
 
-    destroy: function () {},
+    destroy() {}
 
-    _getBaseState: function () {
+    _getBaseState() {
         return [parseInt(this.id), this.kind, this.x, this.y];
-    },
+    }
 
-    getState: function () {
+    getState() {
         return this._getBaseState();
-    },
+    }
 
-    spawn: function () {
-        return new Messages.Spawn(this);
-    },
+    spawn() {
+        return new Spawn(this);
+    }
 
-    despawn: function () {
-        return new Messages.Despawn(this.id);
-    },
+    despawn() {
+        return new Despawn(this.id);
+    }
 
-    setPosition: function (x, y) {
+    setPosition(x, y) {
         this.x = x;
         this.y = y;
-    },
+    }
 
-    getPositionNextTo: function (entity) {
-        var pos = null;
+    getPositionNextTo(entity) {
+        let pos = null;
         if (entity) {
             pos = {};
             // This is a quick & dirty way to give mobs a random position
             // close to another entity.
-            var r = Utils.random(4);
+            const r = Utils.random(4);
 
             pos.x = entity.x;
             pos.y = entity.y;
@@ -50,5 +49,5 @@ module.exports = Entity = cls.Class.extend({
             if (r === 3) pos.x += 1;
         }
         return pos;
-    },
-});
+    }
+}

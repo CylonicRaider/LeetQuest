@@ -1,6 +1,8 @@
-var Types = require("../../shared/js/gametypes");
+import * as Types from "../../shared/js/gametypes.js";
 
-var Properties = {
+import log from "./log.js";
+
+export default {
     rat: {
         drops: {
             flask: 40,
@@ -149,34 +151,36 @@ var Properties = {
         armor: 6,
         weapon: 7,
     },
-};
 
-Properties.getArmorLevel = function (kind) {
-    try {
-        if (Types.isMob(kind)) {
-            return Properties[Types.getKindAsString(kind)].armor;
-        } else {
-            return Types.getArmorRank(kind) + 1;
+    getArmorLevel(kind) {
+        try {
+            if (Types.isMob(kind)) {
+                return this[Types.getKindAsString(kind)].armor;
+            } else {
+                return Types.getArmorRank(kind) + 1;
+            }
+        } catch (e) {
+            log.error(
+                "No level found for armor: " + Types.getKindAsString(kind),
+            );
         }
-    } catch (e) {
-        log.error("No level found for armor: " + Types.getKindAsString(kind));
-    }
-};
+    },
 
-Properties.getWeaponLevel = function (kind) {
-    try {
-        if (Types.isMob(kind)) {
-            return Properties[Types.getKindAsString(kind)].weapon;
-        } else {
-            return Types.getWeaponRank(kind) + 1;
+    getWeaponLevel(kind) {
+        try {
+            if (Types.isMob(kind)) {
+                return this[Types.getKindAsString(kind)].weapon;
+            } else {
+                return Types.getWeaponRank(kind) + 1;
+            }
+        } catch (e) {
+            log.error(
+                "No level found for weapon: " + Types.getKindAsString(kind),
+            );
         }
-    } catch (e) {
-        log.error("No level found for weapon: " + Types.getKindAsString(kind));
-    }
-};
+    },
 
-Properties.getHitPoints = function (kind) {
-    return Properties[Types.getKindAsString(kind)].hp;
+    getHitPoints(kind) {
+        return this[Types.getKindAsString(kind)].hp;
+    },
 };
-
-module.exports = Properties;

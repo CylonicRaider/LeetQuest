@@ -28,11 +28,6 @@ up to several minutes.
 
 ## Things to know
 
-The client map export will create two almost identical files:
-`world_client.js` and `world_client.json`. These are both required because,
-depending on the browser, the game will load the map either by using a web
-worker (loading `world_client.js`), or via Ajax (loading `world_client.json`).
-
 The client map file contains data about terrain tile layers, collision cells,
 doors, music areas, etc. The server map file contains data about static entity
 spawning points, spawning areas, collision cells, etc.

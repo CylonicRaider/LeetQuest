@@ -1,33 +1,33 @@
-define(["entity"], function (Entity) {
-    var Item = Entity.extend({
-        init: function (id, kind, type) {
-            this._super(id, kind);
+import * as Types from "../../shared/js/gametypes.js";
 
-            this.itemKind = Types.getKindAsString(kind);
-            this.type = type;
-            this.wasDropped = false;
-        },
+import Entity from "./entity.js";
 
-        hasShadow: function () {
-            return true;
-        },
+export default class Item extends Entity {
+    constructor(id, kind, type) {
+        super(id, kind);
 
-        onLoot: function (player) {
-            if (this.type === "weapon") {
-                player.switchWeapon(this.itemKind);
-            } else if (this.type === "armor") {
-                player.armorloot_callback(this.itemKind);
-            }
-        },
+        this.itemKind = Types.getKindAsString(kind);
+        this.type = type;
+        this.wasDropped = false;
+    }
 
-        getSpriteName: function () {
-            return "item-" + this.itemKind;
-        },
+    hasShadow() {
+        return true;
+    }
 
-        getLootMessage: function () {
-            return this.lootMessage;
-        },
-    });
+    onLoot(player) {
+        if (this.type === "weapon") {
+            player.switchWeapon(this.itemKind);
+        } else if (this.type === "armor") {
+            player.armorloot_callback(this.itemKind);
+        }
+    }
 
-    return Item;
-});
+    getSpriteName() {
+        return "item-" + this.itemKind;
+    }
+
+    getLootMessage() {
+        return this.lootMessage;
+    }
+}

@@ -1,9 +1,7 @@
-var Utils = require("./utils");
+import * as Utils from "./utils.js";
 
-var Formulas = {};
-
-Formulas.dmg = function (weaponLevel, armorLevel) {
-    var dealt = weaponLevel * Utils.randomInt(5, 10),
+export function dmg(weaponLevel, armorLevel) {
+    const dealt = weaponLevel * Utils.randomInt(5, 10),
         absorbed = armorLevel * Utils.randomInt(1, 3),
         dmg = dealt - absorbed;
 
@@ -13,13 +11,9 @@ Formulas.dmg = function (weaponLevel, armorLevel) {
     } else {
         return dmg;
     }
-};
+}
 
-Formulas.hp = function (armorLevel) {
-    var hp = 80 + (armorLevel - 1) * 30;
+export function hp(armorLevel) {
+    const hp = 80 + (armorLevel - 1) * 30;
     return hp;
-};
-
-if (!(typeof exports === "undefined")) {
-    module.exports = Formulas;
 }

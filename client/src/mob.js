@@ -1,12 +1,10 @@
-define(["character"], function (Character) {
-    var Mob = Character.extend({
-        init: function (id, kind) {
-            this._super(id, kind);
+import Character from "./character.js";
 
-            this.aggroRange = 1;
-            this.isAggressive = true;
-        },
-    });
+export default class Mob extends Character {
+    constructor(id, kind) {
+        super(id, kind);
 
-    return Mob;
-});
+        this.aggroRange = 1;
+        this.isAggressive = true;
+    }
+}

@@ -1,27 +1,27 @@
-define(["entity"], function (Entity) {
-    var Chest = Entity.extend({
-        init: function (id, kind) {
-            this._super(id, Types.Entities.CHEST);
-        },
+import { Entities } from "../../shared/js/gametypes.js";
 
-        getSpriteName: function () {
-            return "chest";
-        },
+import Entity from "./entity.js";
 
-        isMoving: function () {
-            return false;
-        },
+export default class Chest extends Entity {
+    constructor(id, kind) {
+        super(id, Entities.CHEST);
+    }
 
-        open: function () {
-            if (this.open_callback) {
-                this.open_callback();
-            }
-        },
+    getSpriteName() {
+        return "chest";
+    }
 
-        onOpen: function (callback) {
-            this.open_callback = callback;
-        },
-    });
+    isMoving() {
+        return false;
+    }
 
-    return Chest;
-});
+    open() {
+        if (this.open_callback) {
+            this.open_callback();
+        }
+    }
+
+    onOpen(callback) {
+        this.open_callback = callback;
+    }
+}

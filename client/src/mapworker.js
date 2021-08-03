@@ -1,6 +1,9 @@
-importScripts("../maps/world_client.js", "lib/underscore.min.js");
+import forEach from "lodash-es/forEach.js";
+import includes from "lodash-es/includes.js";
 
-onmessage = function (event) {
+import mapData from "../maps/world_client.json";
+
+onmessage = (_event) => {
     generateCollisionGrid();
     generatePlateauGrid();
 
@@ -18,12 +21,12 @@ function generateCollisionGrid() {
         }
     }
 
-    _.each(mapData.collisions, function (tileIndex) {
+    forEach(mapData.collisions, (tileIndex) => {
         var pos = tileIndexToGridPosition(tileIndex + 1);
         mapData.grid[pos.y][pos.x] = 1;
     });
 
-    _.each(mapData.blocking, function (tileIndex) {
+    forEach(mapData.blocking, (tileIndex) => {
         var pos = tileIndexToGridPosition(tileIndex + 1);
         if (mapData.grid[pos.y] !== undefined) {
             mapData.grid[pos.y][pos.x] = 1;
@@ -38,7 +41,7 @@ function generatePlateauGrid() {
     for (var j, i = 0; i < mapData.height; i++) {
         mapData.plateauGrid[i] = [];
         for (j = 0; j < mapData.width; j++) {
-            if (_.include(mapData.plateau, tileIndex)) {
+            if (includes(mapData.plateau, tileIndex)) {
                 mapData.plateauGrid[i][j] = 1;
             } else {
                 mapData.plateauGrid[i][j] = 0;
@@ -52,7 +55,7 @@ function tileIndexToGridPosition(tileNum) {
     var x = 0,
         y = 0;
 
-    var getX = function (num, w) {
+    var getX = (num, w) => {
         if (num == 0) {
             return 0;
         }

@@ -1,82 +1,154 @@
-define([
-    "text!../sprites/agent.json",
-    "text!../sprites/arrow.json",
-    "text!../sprites/axe.json",
-    "text!../sprites/bat.json",
-    "text!../sprites/beachnpc.json",
-    "text!../sprites/bluesword.json",
-    "text!../sprites/boss.json",
-    "text!../sprites/chest.json",
-    "text!../sprites/clotharmor.json",
-    "text!../sprites/coder.json",
-    "text!../sprites/crab.json",
-    "text!../sprites/death.json",
-    "text!../sprites/deathknight.json",
-    "text!../sprites/desertnpc.json",
-    "text!../sprites/eye.json",
-    "text!../sprites/firefox.json",
-    "text!../sprites/forestnpc.json",
-    "text!../sprites/goblin.json",
-    "text!../sprites/goldenarmor.json",
-    "text!../sprites/goldensword.json",
-    "text!../sprites/guard.json",
-    "text!../sprites/hand.json",
-    "text!../sprites/impact.json",
-    "text!../sprites/item-axe.json",
-    "text!../sprites/item-bluesword.json",
-    "text!../sprites/item-burger.json",
-    "text!../sprites/item-cake.json",
-    "text!../sprites/item-firepotion.json",
-    "text!../sprites/item-flask.json",
-    "text!../sprites/item-goldenarmor.json",
-    "text!../sprites/item-goldensword.json",
-    "text!../sprites/item-leatherarmor.json",
-    "text!../sprites/item-mailarmor.json",
-    "text!../sprites/item-morningstar.json",
-    "text!../sprites/item-platearmor.json",
-    "text!../sprites/item-redarmor.json",
-    "text!../sprites/item-redsword.json",
-    "text!../sprites/item-sword1.json",
-    "text!../sprites/item-sword2.json",
-    "text!../sprites/king.json",
-    "text!../sprites/lavanpc.json",
-    "text!../sprites/leatherarmor.json",
-    "text!../sprites/loot.json",
-    "text!../sprites/mailarmor.json",
-    "text!../sprites/morningstar.json",
-    "text!../sprites/nyan.json",
-    "text!../sprites/octocat.json",
-    "text!../sprites/ogre.json",
-    "text!../sprites/platearmor.json",
-    "text!../sprites/priest.json",
-    "text!../sprites/rat.json",
-    "text!../sprites/redarmor.json",
-    "text!../sprites/redsword.json",
-    "text!../sprites/rick.json",
-    "text!../sprites/scientist.json",
-    "text!../sprites/shadow16.json",
-    "text!../sprites/skeleton.json",
-    "text!../sprites/skeleton2.json",
-    "text!../sprites/snake.json",
-    "text!../sprites/sorcerer.json",
-    "text!../sprites/sparks.json",
-    "text!../sprites/spectre.json",
-    "text!../sprites/sword.json",
-    "text!../sprites/sword1.json",
-    "text!../sprites/sword2.json",
-    "text!../sprites/talk.json",
-    "text!../sprites/target.json",
-    "text!../sprites/villagegirl.json",
-    "text!../sprites/villager.json",
-    "text!../sprites/wizard.json",
-], function () {
-    var sprites = {};
+import agent from "../sprites/agent.json";
+import arrow from "../sprites/arrow.json";
+import axe from "../sprites/axe.json";
+import bat from "../sprites/bat.json";
+import beachnpc from "../sprites/beachnpc.json";
+import bluesword from "../sprites/bluesword.json";
+import boss from "../sprites/boss.json";
+import chest from "../sprites/chest.json";
+import clotharmor from "../sprites/clotharmor.json";
+import coder from "../sprites/coder.json";
+import crab from "../sprites/crab.json";
+import death from "../sprites/death.json";
+import deathknight from "../sprites/deathknight.json";
+import desertnpc from "../sprites/desertnpc.json";
+import eye from "../sprites/eye.json";
+import firefox from "../sprites/firefox.json";
+import forestnpc from "../sprites/forestnpc.json";
+import goblin from "../sprites/goblin.json";
+import goldenarmor from "../sprites/goldenarmor.json";
+import goldensword from "../sprites/goldensword.json";
+import guard from "../sprites/guard.json";
+import hand from "../sprites/hand.json";
+import impact from "../sprites/impact.json";
+import itemAxe from "../sprites/item-axe.json";
+import itemBluesword from "../sprites/item-bluesword.json";
+import itemBurger from "../sprites/item-burger.json";
+import itemCake from "../sprites/item-cake.json";
+import itemFirepotion from "../sprites/item-firepotion.json";
+import itemFlask from "../sprites/item-flask.json";
+import itemGoldenarmor from "../sprites/item-goldenarmor.json";
+import itemGoldensword from "../sprites/item-goldensword.json";
+import itemLeatherarmor from "../sprites/item-leatherarmor.json";
+import itemMailarmor from "../sprites/item-mailarmor.json";
+import itemMorningstar from "../sprites/item-morningstar.json";
+import itemPlatearmor from "../sprites/item-platearmor.json";
+import itemRedarmor from "../sprites/item-redarmor.json";
+import itemRedsword from "../sprites/item-redsword.json";
+import itemSword1 from "../sprites/item-sword1.json";
+import itemSword2 from "../sprites/item-sword2.json";
+import king from "../sprites/king.json";
+import lavanpc from "../sprites/lavanpc.json";
+import leatherarmor from "../sprites/leatherarmor.json";
+import loot from "../sprites/loot.json";
+import mailarmor from "../sprites/mailarmor.json";
+import morningstar from "../sprites/morningstar.json";
+import nyan from "../sprites/nyan.json";
+import octocat from "../sprites/octocat.json";
+import ogre from "../sprites/ogre.json";
+import platearmor from "../sprites/platearmor.json";
+import priest from "../sprites/priest.json";
+import rat from "../sprites/rat.json";
+import redarmor from "../sprites/redarmor.json";
+import redsword from "../sprites/redsword.json";
+import rick from "../sprites/rick.json";
+import scientist from "../sprites/scientist.json";
+import shadow16 from "../sprites/shadow16.json";
+import skeleton2 from "../sprites/skeleton2.json";
+import skeleton from "../sprites/skeleton.json";
+import snake from "../sprites/snake.json";
+import sorcerer from "../sprites/sorcerer.json";
+import sparks from "../sprites/sparks.json";
+import spectre from "../sprites/spectre.json";
+import sword1 from "../sprites/sword1.json";
+import sword2 from "../sprites/sword2.json";
+import sword from "../sprites/sword.json";
+import talk from "../sprites/talk.json";
+import target from "../sprites/target.json";
+import villagegirl from "../sprites/villagegirl.json";
+import villager from "../sprites/villager.json";
+import wizard from "../sprites/wizard.json";
 
-    _.each(arguments, function (spriteJson) {
-        var sprite = JSON.parse(spriteJson);
+// TODO: perhaps use a custom webpack loader to import all json files into an array at once
 
-        sprites[sprite.id] = sprite;
-    });
+const SPRITE_OBJECTS = [
+    agent,
+    arrow,
+    axe,
+    bat,
+    beachnpc,
+    bluesword,
+    boss,
+    chest,
+    clotharmor,
+    coder,
+    crab,
+    death,
+    deathknight,
+    desertnpc,
+    eye,
+    firefox,
+    forestnpc,
+    goblin,
+    goldenarmor,
+    goldensword,
+    guard,
+    hand,
+    impact,
+    itemAxe,
+    itemBluesword,
+    itemBurger,
+    itemCake,
+    itemFirepotion,
+    itemFlask,
+    itemGoldenarmor,
+    itemGoldensword,
+    itemLeatherarmor,
+    itemMailarmor,
+    itemMorningstar,
+    itemPlatearmor,
+    itemRedarmor,
+    itemRedsword,
+    itemSword1,
+    itemSword2,
+    king,
+    lavanpc,
+    leatherarmor,
+    loot,
+    mailarmor,
+    morningstar,
+    nyan,
+    octocat,
+    ogre,
+    platearmor,
+    priest,
+    rat,
+    redarmor,
+    redsword,
+    rick,
+    scientist,
+    shadow16,
+    skeleton,
+    skeleton2,
+    snake,
+    sorcerer,
+    sparks,
+    spectre,
+    sword,
+    sword1,
+    sword2,
+    talk,
+    target,
+    villagegirl,
+    villager,
+    wizard,
+];
 
-    return sprites;
-});
+// TODO: use Map instead
+const sprites = {};
+
+for (const sprite of SPRITE_OBJECTS) {
+    sprites[sprite.id] = sprite;
+}
+
+export default sprites;

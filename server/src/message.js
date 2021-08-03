@@ -1,197 +1,205 @@
-var cls = require("./lib/class"),
-    _ = require("underscore"),
-    Utils = require("./utils"),
-    Types = require("../../shared/js/gametypes");
+import map from "lodash-es/map.js";
 
-var Messages = {};
-module.exports = Messages;
+import { Messages } from "../../shared/js/gametypes.js";
 
-var Message = cls.Class.extend({});
+class Message {}
 
-Messages.Spawn = Message.extend({
-    init: function (entity) {
+export class Spawn extends Message {
+    constructor(entity) {
+        super();
         this.entity = entity;
-    },
-    serialize: function () {
-        var spawn = [Types.Messages.SPAWN];
+    }
+    serialize() {
+        const spawn = [Messages.SPAWN];
         return spawn.concat(this.entity.getState());
-    },
-});
+    }
+}
 
-Messages.Despawn = Message.extend({
-    init: function (entityId) {
+export class Despawn extends Message {
+    constructor(entityId) {
+        super();
         this.entityId = entityId;
-    },
-    serialize: function () {
-        return [Types.Messages.DESPAWN, this.entityId];
-    },
-});
+    }
+    serialize() {
+        return [Messages.DESPAWN, this.entityId];
+    }
+}
 
-Messages.Move = Message.extend({
-    init: function (entity) {
+export class Move extends Message {
+    constructor(entity) {
+        super();
         this.entity = entity;
-    },
-    serialize: function () {
-        return [
-            Types.Messages.MOVE,
-            this.entity.id,
-            this.entity.x,
-            this.entity.y,
-        ];
-    },
-});
+    }
+    serialize() {
+        return [Messages.MOVE, this.entity.id, this.entity.x, this.entity.y];
+    }
+}
 
-Messages.LootMove = Message.extend({
-    init: function (entity, item) {
+export class LootMove extends Message {
+    constructor(entity, item) {
+        super();
         this.entity = entity;
         this.item = item;
-    },
-    serialize: function () {
-        return [Types.Messages.LOOTMOVE, this.entity.id, this.item.id];
-    },
-});
+    }
+    serialize() {
+        return [Messages.LOOTMOVE, this.entity.id, this.item.id];
+    }
+}
 
-Messages.Attack = Message.extend({
-    init: function (attackerId, targetId) {
+export class Attack extends Message {
+    constructor(attackerId, targetId) {
+        super();
         this.attackerId = attackerId;
         this.targetId = targetId;
-    },
-    serialize: function () {
-        return [Types.Messages.ATTACK, this.attackerId, this.targetId];
-    },
-});
+    }
+    serialize() {
+        return [Messages.ATTACK, this.attackerId, this.targetId];
+    }
+}
 
-Messages.Health = Message.extend({
-    init: function (points, isRegen) {
+export class Health extends Message {
+    constructor(points, isRegen) {
+        super();
         this.points = points;
         this.isRegen = isRegen;
-    },
-    serialize: function () {
-        var health = [Types.Messages.HEALTH, this.points];
+    }
+    serialize() {
+        const health = [Messages.HEALTH, this.points];
 
         if (this.isRegen) {
             health.push(1);
         }
         return health;
-    },
-});
+    }
+}
 
-Messages.HitPoints = Message.extend({
-    init: function (maxHitPoints) {
+export class HitPoints extends Message {
+    constructor(maxHitPoints) {
+        super();
         this.maxHitPoints = maxHitPoints;
-    },
-    serialize: function () {
-        return [Types.Messages.HP, this.maxHitPoints];
-    },
-});
+    }
+    serialize() {
+        return [Messages.HP, this.maxHitPoints];
+    }
+}
 
-Messages.EquipItem = Message.extend({
-    init: function (player, itemKind) {
+export class EquipItem extends Message {
+    constructor(player, itemKind) {
+        super();
         this.playerId = player.id;
         this.itemKind = itemKind;
-    },
-    serialize: function () {
-        return [Types.Messages.EQUIP, this.playerId, this.itemKind];
-    },
-});
+    }
+    serialize() {
+        return [Messages.EQUIP, this.playerId, this.itemKind];
+    }
+}
 
-Messages.Drop = Message.extend({
-    init: function (mob, item) {
+export class Drop extends Message {
+    constructor(mob, item) {
+        super();
         this.mob = mob;
         this.item = item;
-    },
-    serialize: function () {
-        var drop = [
-            Types.Messages.DROP,
+    }
+    serialize() {
+        const drop = [
+            Messages.DROP,
             this.mob.id,
             this.item.id,
             this.item.kind,
-            _.pluck(this.mob.hatelist, "id"),
+            map(this.mob.hatelist, "id"),
         ];
 
         return drop;
-    },
-});
+    }
+}
 
-Messages.Chat = Message.extend({
-    init: function (player, message) {
+export class Chat extends Message {
+    constructor(player, message) {
+        super();
         this.playerId = player.id;
         this.message = message;
-    },
-    serialize: function () {
-        return [Types.Messages.CHAT, this.playerId, this.message];
-    },
-});
+    }
+    serialize() {
+        return [Messages.CHAT, this.playerId, this.message];
+    }
+}
 
-Messages.Teleport = Message.extend({
-    init: function (entity) {
+export class Teleport extends Message {
+    constructor(entity) {
+        super();
         this.entity = entity;
-    },
-    serialize: function () {
+    }
+    serialize() {
         return [
-            Types.Messages.TELEPORT,
+            Messages.TELEPORT,
             this.entity.id,
             this.entity.x,
             this.entity.y,
         ];
-    },
-});
+    }
+}
 
-Messages.Damage = Message.extend({
-    init: function (entity, points) {
+export class Damage extends Message {
+    constructor(entity, points) {
+        super();
         this.entity = entity;
         this.points = points;
-    },
-    serialize: function () {
-        return [Types.Messages.DAMAGE, this.entity.id, this.points];
-    },
-});
+    }
+    serialize() {
+        return [Messages.DAMAGE, this.entity.id, this.points];
+    }
+}
 
-Messages.Population = Message.extend({
-    init: function (world, total) {
+export class Population extends Message {
+    constructor(world, total) {
+        super();
         this.world = world;
         this.total = total;
-    },
-    serialize: function () {
-        return [Types.Messages.POPULATION, this.world, this.total];
-    },
-});
+    }
+    serialize() {
+        return [Messages.POPULATION, this.world, this.total];
+    }
+}
 
-Messages.Kill = Message.extend({
-    init: function (mob) {
+export class Kill extends Message {
+    constructor(mob) {
+        super();
         this.mob = mob;
-    },
-    serialize: function () {
-        return [Types.Messages.KILL, this.mob.kind];
-    },
-});
+    }
+    serialize() {
+        return [Messages.KILL, this.mob.kind];
+    }
+}
 
-Messages.List = Message.extend({
-    init: function (ids) {
+export class List extends Message {
+    constructor(ids) {
+        super();
         this.ids = ids;
-    },
-    serialize: function () {
-        var list = this.ids;
+    }
+    serialize() {
+        const list = this.ids;
 
-        list.unshift(Types.Messages.LIST);
+        list.unshift(Messages.LIST);
         return list;
-    },
-});
+    }
+}
 
-Messages.Destroy = Message.extend({
-    init: function (entity) {
+export class Destroy extends Message {
+    constructor(entity) {
+        super();
         this.entity = entity;
-    },
-    serialize: function () {
-        return [Types.Messages.DESTROY, this.entity.id];
-    },
-});
+    }
+    serialize() {
+        return [Messages.DESTROY, this.entity.id];
+    }
+}
 
-Messages.Blink = Message.extend({
-    init: function (item) {
+export class Blink extends Message {
+    constructor(item) {
+        super();
         this.item = item;
-    },
-    serialize: function () {
-        return [Types.Messages.BLINK, this.item.id];
-    },
-});
+    }
+    serialize() {
+        return [Messages.BLINK, this.item.id];
+    }
+}

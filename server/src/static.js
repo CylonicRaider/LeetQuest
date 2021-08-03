@@ -1,8 +1,24 @@
-var path = require("path"),
-    express = require("express");
+import express from "express";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+import webpack from "webpack";
+import webpackDevMiddleware from "webpack-dev-middleware";
 
-var app = express();
+import webpackDevConfig from "../../webpack.dev.js";
 
-app.use(express.static(path.join(__dirname, "../../client-build")));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-module.exports = app;
+const app = express();
+
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(join(__dirname, "../../dist/client")));
+} else {
+    const compiler = webpack(webpackDevConfig);
+    app.use(
+        webpackDevMiddleware(compiler, {
+            publicPath: webpackDevConfig.output.publicPath,
+        }),
+    );
+}
+
+export default app;

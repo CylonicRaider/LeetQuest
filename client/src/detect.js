@@ -1,55 +1,57 @@
-var Detect = {};
+import { audioMp3 as supportsMp3 } from "modernizr-esm/feature/audio";
 
-Detect.supportsWebSocket = function () {
-    return window.WebSocket || window.MozWebSocket;
-};
+export default {
+    supportsWebSocket() {
+        return window.WebSocket || window.MozWebSocket;
+    },
 
-Detect.userAgentContains = function (string) {
-    return navigator.userAgent.indexOf(string) != -1;
-};
+    userAgentContains(string) {
+        return navigator.userAgent.indexOf(string) != -1;
+    },
 
-Detect.isTablet = function (screenWidth) {
-    if (screenWidth > 640) {
-        if (
-            (Detect.userAgentContains("Android") &&
-                Detect.userAgentContains("Firefox")) ||
-            Detect.userAgentContains("Mobile")
-        ) {
-            return true;
+    isTablet(screenWidth) {
+        if (screenWidth > 640) {
+            if (
+                (this.userAgentContains("Android") &&
+                    this.userAgentContains("Firefox")) ||
+                this.userAgentContains("Mobile")
+            ) {
+                return true;
+            }
         }
-    }
-    return false;
-};
+        return false;
+    },
 
-Detect.isWindows = function () {
-    return Detect.userAgentContains("Windows");
-};
+    isWindows() {
+        return this.userAgentContains("Windows");
+    },
 
-Detect.isChromeOnWindows = function () {
-    return (
-        Detect.userAgentContains("Chrome") &&
-        Detect.userAgentContains("Windows")
-    );
-};
+    isChromeOnWindows() {
+        return (
+            this.userAgentContains("Chrome") &&
+            this.userAgentContains("Windows")
+        );
+    },
 
-Detect.canPlayMP3 = function () {
-    return Modernizr.audio.mp3;
-};
+    canPlayMP3() {
+        return supportsMp3;
+    },
 
-Detect.isSafari = function () {
-    return (
-        Detect.userAgentContains("Safari") &&
-        !Detect.userAgentContains("Chrome")
-    );
-};
+    isSafari() {
+        return (
+            this.userAgentContains("Safari") &&
+            !this.userAgentContains("Chrome")
+        );
+    },
 
-Detect.isOpera = function () {
-    return Detect.userAgentContains("Opera");
-};
+    isOpera() {
+        return this.userAgentContains("Opera");
+    },
 
-Detect.isFirefoxAndroid = function () {
-    return (
-        Detect.userAgentContains("Android") &&
-        Detect.userAgentContains("Firefox")
-    );
+    isFirefoxAndroid() {
+        return (
+            this.userAgentContains("Android") &&
+            this.userAgentContains("Firefox")
+        );
+    },
 };

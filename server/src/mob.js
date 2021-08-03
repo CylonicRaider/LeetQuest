@@ -1,12 +1,19 @@
-var cls = require("./lib/class"),
-    _ = require("underscore"),
-    Messages = require("./message"),
-    Properties = require("./properties"),
-    Types = require("../../shared/js/gametypes");
+import find from "lodash-es/find.js";
+import reject from "lodash-es/reject.js";
+import _size from "lodash-es/size.js";
+import some from "lodash-es/some.js";
+import sortBy from "lodash-es/sortBy.js";
 
-module.exports = Mob = Character.extend({
-    init: function (id, kind, x, y) {
-        this._super(id, "mob", kind, x, y);
+import Character from "./character.js";
+import ChestArea from "./chestarea.js";
+import * as Messages from "./message.js";
+import MobArea from "./mobarea.js";
+import Properties from "./properties.js";
+import * as Utils from "./utils.js";
+
+export default class Mob extends Character {
+    constructor(id, kind, x, y) {
+        super(id, "mob", kind, x, y);
 
         this.updateHitPoints();
         this.spawningX = x;
@@ -17,9 +24,9 @@ module.exports = Mob = Character.extend({
         this.respawnTimeout = null;
         this.returnTimeout = null;
         this.isDead = false;
-    },
+    }
 
-    destroy: function () {
+    destroy() {
         this.isDead = true;
         this.hatelist = [];
         this.clearTarget();
@@ -27,30 +34,26 @@ module.exports = Mob = Character.extend({
         this.resetPosition();
 
         this.handleRespawn();
-    },
+    }
 
-    receiveDamage: function (points, playerId) {
+    receiveDamage(points, playerId) {
         this.hitPoints -= points;
-    },
+    }
 
-    hates: function (playerId) {
-        return _.any(this.hatelist, function (obj) {
-            return obj.id === playerId;
-        });
-    },
+    hates(playerId) {
+        return some(this.hatelist, (obj) => obj.id === playerId);
+    }
 
-    increaseHateFor: function (playerId, points) {
+    increaseHateFor(playerId, points) {
         if (this.hates(playerId)) {
-            _.detect(this.hatelist, function (obj) {
-                return obj.id === playerId;
-            }).hate += points;
+            find(this.hatelist, (obj) => obj.id === playerId).hate += points;
         } else {
             this.hatelist.push({ id: playerId, hate: points });
         }
 
         /*
-        log.debug("Hatelist : "+this.id);
-        _.each(this.hatelist, function(obj) {
+        log.debug(`Hatelist : ${this.id}`);
+        forEach(this.hatelist, (obj) => {
             log.debug(obj.id + " -> " + obj.hate);
         });*/
 
@@ -60,15 +63,12 @@ module.exports = Mob = Character.extend({
             clearTimeout(this.returnTimeout);
             this.returnTimeout = null;
         }
-    },
+    }
 
-    getHatedPlayerId: function (hateRank) {
-        var i,
-            playerId,
-            sorted = _.sortBy(this.hatelist, function (obj) {
-                return obj.hate;
-            }),
-            size = _.size(this.hatelist);
+    getHatedPlayerId(hateRank) {
+        let i, playerId;
+        const sorted = sortBy(this.hatelist, "hate"),
+            size = _size(this.hatelist);
 
         if (hateRank && hateRank <= size) {
             i = size - hateRank;
@@ -80,32 +80,29 @@ module.exports = Mob = Character.extend({
         }
 
         return playerId;
-    },
+    }
 
-    forgetPlayer: function (playerId, duration) {
-        this.hatelist = _.reject(this.hatelist, function (obj) {
-            return obj.id === playerId;
-        });
+    forgetPlayer(playerId, duration) {
+        this.hatelist = reject(this.hatelist, (obj) => obj.id === playerId);
 
         if (this.hatelist.length === 0) {
             this.returnToSpawningPosition(duration);
         }
-    },
+    }
 
-    forgetEveryone: function () {
+    forgetEveryone() {
         this.hatelist = [];
         this.returnToSpawningPosition(1);
-    },
+    }
 
-    drop: function (item) {
+    drop(item) {
         if (item) {
             return new Messages.Drop(this, item);
         }
-    },
+    }
 
-    handleRespawn: function () {
-        var delay = 30000,
-            self = this;
+    handleRespawn() {
+        const delay = 30000;
 
         if (this.area && this.area instanceof MobArea) {
             // Respawn inside the area if part of a MobArea
@@ -115,50 +112,49 @@ module.exports = Mob = Character.extend({
                 this.area.removeFromArea(this);
             }
 
-            setTimeout(function () {
-                if (self.respawn_callback) {
-                    self.respawn_callback();
+            setTimeout(() => {
+                if (this.respawn_callback) {
+                    this.respawn_callback();
                 }
             }, delay);
         }
-    },
+    }
 
-    onRespawn: function (callback) {
+    onRespawn(callback) {
         this.respawn_callback = callback;
-    },
+    }
 
-    resetPosition: function () {
+    resetPosition() {
         this.setPosition(this.spawningX, this.spawningY);
-    },
+    }
 
-    returnToSpawningPosition: function (waitDuration) {
-        var self = this,
-            delay = waitDuration || 4000;
+    returnToSpawningPosition(waitDuration) {
+        const delay = waitDuration || 4000;
 
         this.clearTarget();
 
-        this.returnTimeout = setTimeout(function () {
-            self.resetPosition();
-            self.move(self.x, self.y);
+        this.returnTimeout = setTimeout(() => {
+            this.resetPosition();
+            this.move(this.x, this.y);
         }, delay);
-    },
+    }
 
-    onMove: function (callback) {
+    onMove(callback) {
         this.move_callback = callback;
-    },
+    }
 
-    move: function (x, y) {
+    move(x, y) {
         this.setPosition(x, y);
         if (this.move_callback) {
             this.move_callback(this);
         }
-    },
+    }
 
-    updateHitPoints: function () {
+    updateHitPoints() {
         this.resetHitPoints(Properties.getHitPoints(this.kind));
-    },
+    }
 
-    distanceToSpawningPoint: function (x, y) {
+    distanceToSpawningPoint(x, y) {
         return Utils.distanceTo(x, y, this.spawningX, this.spawningY);
-    },
-});
+    }
+}

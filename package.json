@@ -4,29 +4,40 @@
     "type": "module",
     "dependencies": {
         "bison": "^1.1.1",
+        "copy-webpack-plugin": "^9.0.1",
         "express": "^4.16.3",
-        "log": "^1.4.0",
+        "he": "^1.2.0",
+        "htmlparser2": "^6.1.0",
+        "jquery": "^3.6.0",
+        "lodash-es": "^4.17.21",
         "memcache": "^0.3.0",
-        "minimist": "^1.2.0",
-        "sanitizer": "^0.0.15",
-        "sax": "^1.2.4",
-        "underscore": "^1.9.1",
+        "modernizr-esm": "^2.0.0",
+        "pino": "^6.13.0",
+        "sanitize-html": "^2.4.0",
+        "webpack": "^5.47.1",
+        "webpack-dev-middleware": "^5.0.0",
+        "webpack-merge": "^5.8.0",
         "websocket": "^1.0.4",
         "websocket-server": "ThisIsMissEm/node-websocket-server#v1.4.04"
     },
     "devDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^2.0.2",
         "eslint": "^7.32.0",
+        "eslint-import-resolver-webpack": "^0.13.1",
         "eslint-plugin-import": "^2.23.4",
         "eslint-plugin-node": "^11.1.0",
-        "prettier": "^2.3.2"
+        "pino-pretty": "^5.1.2",
+        "prettier": "^2.3.2",
+        "webpack-bundle-analyzer": "^4.4.2",
+        "webpack-cli": "^4.7.2"
     },
     "scripts": {
         "build-maps": "node tools/maps/export.js",
-        "build": "node bin/build.js",
-        "start": "node bin/run.js",
         "format": "prettier --write .",
-        "lint": "eslint . --ext .js,.ts"
+        "lint": "eslint . --ext .js,.ts",
+        "prestart": "NODE_ENV=production webpack --config webpack.prod.js",
+        "start": "NODE_ENV=production node ./server/src/index.js",
+        "start-dev": "NODE_ENV=development node ./server/src/index.js | pino-pretty -ct"
     },
     "engines": {
         "node": ">=10.0.0"

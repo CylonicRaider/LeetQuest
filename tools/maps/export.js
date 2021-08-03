@@ -1,77 +1,53 @@
-var fs = require("fs");
-var path = require("path");
-var process = require("process");
-var child_process = require("child_process");
+import fs from "fs";
+import path from "path";
+import process from "process";
+import { fileURLToPath } from "url";
 
-var SRC_FILE = "tmx/map.tmx";
-var TEMP_FILE = "tmx/map.tmx.json";
+import processMap from "./processmap.js";
+import tmx2jsobj from "./tmx2jsobj.js";
 
-function runCommand(cmdline, cb) {
-    var proc = child_process.spawn(cmdline[0], cmdline.slice(1), {
-        cwd: __dirname,
-        stdio: "inherit",
-    });
-    proc.on("close", function (code, signal) {
-        if (code !== 0) {
-            console.error(
-                "Child process " +
-                    (signal
-                        ? "got signal " + signal
-                        : "exited with code " + code),
-            );
-            process.exit(1);
-        }
-        cb();
-    });
-}
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-var mode = process.argv[2] || "both";
-var doClient = mode === "client" || mode === "both";
-var doServer = mode === "server" || mode === "both";
+process.chdir(__dirname);
 
-var DEST_FILE =
-    mode === "client"
-        ? "../../client/maps/world_client"
-        : "../../server/maps/world_server.json";
+const SRC_FILE = "tmx/map.tmx";
+const CLIENT_DEST_FILE = "../../client/maps/world_client.json";
+const SERVER_DEST_FILE = "../../server/maps/world_server.json";
+
+const mode = process.argv[2] || "both";
+const doClient = mode === "client" || mode === "both";
+const doServer = mode === "server" || mode === "both";
 
 console.log("Translating map file to JSON...");
-runCommand(["node", "tmx2json.js", SRC_FILE, TEMP_FILE], function () {
-    function onDone() {
-        if (--pending !== 0) return;
-        console.log("Removing temporary file...");
-        fs.unlink(path.join(__dirname, TEMP_FILE), function (err) {
-            if (err) throw err;
-            console.log("Done.");
-        });
-    }
-
-    var pending = 0;
-    if (doClient) {
-        pending++;
-        console.log("Compiling client map...");
-        runCommand(
-            [
-                "node",
-                "exportmap.js",
-                TEMP_FILE,
-                "../../client/maps/world_client",
-                "client",
-            ],
-            onDone,
-        );
-    }
-    if (doServer) {
-        pending++;
-        console.log("Compiling server map...");
-        runCommand(
-            [
-                "node",
-                "exportmap.js",
-                TEMP_FILE,
-                "../server/maps/world_server.json",
-                "server",
-            ],
-            onDone,
-        );
-    }
-});
+tmx2jsobj(SRC_FILE)
+    .then((unprocessedMap) => {
+        if (doClient) {
+            console.log("Compiling client map...");
+            const clientMap = processMap(unprocessedMap, { mode: "client" });
+            fs.writeFile(CLIENT_DEST_FILE, JSON.stringify(clientMap), (err) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.info(
+                        `Finished processing map file: ${CLIENT_DEST_FILE} was saved.`,
+                    );
+                }
+            });
+        }
+        if (doServer) {
+            console.log("Compiling server map...");
+            const serverMap = processMap(unprocessedMap, { mode: "server" });
+            fs.writeFile(SERVER_DEST_FILE, JSON.stringify(serverMap), (err) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.info(
+                        `Finished processing map file: ${SERVER_DEST_FILE} was saved.`,
+                    );
+                }
+            });
+        }
+    })
+    .catch((err) => {
+        console.error(err);
+    });

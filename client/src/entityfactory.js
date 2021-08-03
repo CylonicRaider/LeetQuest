@@ -1,216 +1,216 @@
-define(["mobs", "items", "npcs", "warrior", "chest"], function (
-    Mobs,
-    Items,
-    NPCs,
-    Warrior,
-    Chest,
-) {
-    var EntityFactory = {};
+import isFunction from "lodash-es/isFunction.js";
 
-    EntityFactory.createEntity = function (kind, id, name) {
+import { Entities } from "../../shared/js/gametypes.js";
+
+import Chest from "./chest.js";
+import Items from "./items.js";
+import log from "./lib/log.js";
+import Mobs from "./mobs.js";
+import NPCs from "./npcs.js";
+import Warrior from "./warrior.js";
+
+export default {
+    createEntity(kind, id, name) {
         if (!kind) {
-            log.error("kind is undefined", true);
+            log.error("kind is undefined");
             return;
         }
 
-        if (!_.isFunction(EntityFactory.builders[kind])) {
+        if (!isFunction(this.builders[kind])) {
             throw Error(kind + " is not a valid Entity type");
         }
 
-        return EntityFactory.builders[kind](id, name);
-    };
+        return this.builders[kind](id, name);
+    },
 
     //===== mobs ======
+    builders: {
+        [Entities.WARRIOR](id, name) {
+            return new Warrior(id, name);
+        },
 
-    EntityFactory.builders = [];
+        [Entities.RAT](id) {
+            return new Mobs.Rat(id);
+        },
 
-    EntityFactory.builders[Types.Entities.WARRIOR] = function (id, name) {
-        return new Warrior(id, name);
-    };
+        [Entities.SKELETON](id) {
+            return new Mobs.Skeleton(id);
+        },
 
-    EntityFactory.builders[Types.Entities.RAT] = function (id) {
-        return new Mobs.Rat(id);
-    };
+        [Entities.SKELETON2](id) {
+            return new Mobs.Skeleton2(id);
+        },
 
-    EntityFactory.builders[Types.Entities.SKELETON] = function (id) {
-        return new Mobs.Skeleton(id);
-    };
+        [Entities.SPECTRE](id) {
+            return new Mobs.Spectre(id);
+        },
 
-    EntityFactory.builders[Types.Entities.SKELETON2] = function (id) {
-        return new Mobs.Skeleton2(id);
-    };
+        [Entities.DEATHKNIGHT](id) {
+            return new Mobs.Deathknight(id);
+        },
 
-    EntityFactory.builders[Types.Entities.SPECTRE] = function (id) {
-        return new Mobs.Spectre(id);
-    };
+        [Entities.GOBLIN](id) {
+            return new Mobs.Goblin(id);
+        },
 
-    EntityFactory.builders[Types.Entities.DEATHKNIGHT] = function (id) {
-        return new Mobs.Deathknight(id);
-    };
+        [Entities.OGRE](id) {
+            return new Mobs.Ogre(id);
+        },
 
-    EntityFactory.builders[Types.Entities.GOBLIN] = function (id) {
-        return new Mobs.Goblin(id);
-    };
+        [Entities.CRAB](id) {
+            return new Mobs.Crab(id);
+        },
 
-    EntityFactory.builders[Types.Entities.OGRE] = function (id) {
-        return new Mobs.Ogre(id);
-    };
+        [Entities.SNAKE](id) {
+            return new Mobs.Snake(id);
+        },
 
-    EntityFactory.builders[Types.Entities.CRAB] = function (id) {
-        return new Mobs.Crab(id);
-    };
+        [Entities.EYE](id) {
+            return new Mobs.Eye(id);
+        },
 
-    EntityFactory.builders[Types.Entities.SNAKE] = function (id) {
-        return new Mobs.Snake(id);
-    };
+        [Entities.BAT](id) {
+            return new Mobs.Bat(id);
+        },
 
-    EntityFactory.builders[Types.Entities.EYE] = function (id) {
-        return new Mobs.Eye(id);
-    };
+        [Entities.WIZARD](id) {
+            return new Mobs.Wizard(id);
+        },
 
-    EntityFactory.builders[Types.Entities.BAT] = function (id) {
-        return new Mobs.Bat(id);
-    };
+        [Entities.BOSS](id) {
+            return new Mobs.Boss(id);
+        },
 
-    EntityFactory.builders[Types.Entities.WIZARD] = function (id) {
-        return new Mobs.Wizard(id);
-    };
+        //===== items ======
 
-    EntityFactory.builders[Types.Entities.BOSS] = function (id) {
-        return new Mobs.Boss(id);
-    };
+        [Entities.SWORD2](id) {
+            return new Items.Sword2(id);
+        },
 
-    //===== items ======
+        [Entities.AXE](id) {
+            return new Items.Axe(id);
+        },
 
-    EntityFactory.builders[Types.Entities.SWORD2] = function (id) {
-        return new Items.Sword2(id);
-    };
+        [Entities.REDSWORD](id) {
+            return new Items.RedSword(id);
+        },
 
-    EntityFactory.builders[Types.Entities.AXE] = function (id) {
-        return new Items.Axe(id);
-    };
+        [Entities.BLUESWORD](id) {
+            return new Items.BlueSword(id);
+        },
 
-    EntityFactory.builders[Types.Entities.REDSWORD] = function (id) {
-        return new Items.RedSword(id);
-    };
+        [Entities.GOLDENSWORD](id) {
+            return new Items.GoldenSword(id);
+        },
 
-    EntityFactory.builders[Types.Entities.BLUESWORD] = function (id) {
-        return new Items.BlueSword(id);
-    };
+        [Entities.MORNINGSTAR](id) {
+            return new Items.MorningStar(id);
+        },
 
-    EntityFactory.builders[Types.Entities.GOLDENSWORD] = function (id) {
-        return new Items.GoldenSword(id);
-    };
+        [Entities.MAILARMOR](id) {
+            return new Items.MailArmor(id);
+        },
 
-    EntityFactory.builders[Types.Entities.MORNINGSTAR] = function (id) {
-        return new Items.MorningStar(id);
-    };
+        [Entities.LEATHERARMOR](id) {
+            return new Items.LeatherArmor(id);
+        },
 
-    EntityFactory.builders[Types.Entities.MAILARMOR] = function (id) {
-        return new Items.MailArmor(id);
-    };
+        [Entities.PLATEARMOR](id) {
+            return new Items.PlateArmor(id);
+        },
 
-    EntityFactory.builders[Types.Entities.LEATHERARMOR] = function (id) {
-        return new Items.LeatherArmor(id);
-    };
+        [Entities.REDARMOR](id) {
+            return new Items.RedArmor(id);
+        },
 
-    EntityFactory.builders[Types.Entities.PLATEARMOR] = function (id) {
-        return new Items.PlateArmor(id);
-    };
+        [Entities.GOLDENARMOR](id) {
+            return new Items.GoldenArmor(id);
+        },
 
-    EntityFactory.builders[Types.Entities.REDARMOR] = function (id) {
-        return new Items.RedArmor(id);
-    };
+        [Entities.FLASK](id) {
+            return new Items.Flask(id);
+        },
 
-    EntityFactory.builders[Types.Entities.GOLDENARMOR] = function (id) {
-        return new Items.GoldenArmor(id);
-    };
+        [Entities.FIREPOTION](id) {
+            return new Items.FirePotion(id);
+        },
 
-    EntityFactory.builders[Types.Entities.FLASK] = function (id) {
-        return new Items.Flask(id);
-    };
+        [Entities.BURGER](id) {
+            return new Items.Burger(id);
+        },
 
-    EntityFactory.builders[Types.Entities.FIREPOTION] = function (id) {
-        return new Items.FirePotion(id);
-    };
+        [Entities.CAKE](id) {
+            return new Items.Cake(id);
+        },
 
-    EntityFactory.builders[Types.Entities.BURGER] = function (id) {
-        return new Items.Burger(id);
-    };
+        [Entities.CHEST](id) {
+            return new Chest(id);
+        },
 
-    EntityFactory.builders[Types.Entities.CAKE] = function (id) {
-        return new Items.Cake(id);
-    };
+        //====== NPCs ======
 
-    EntityFactory.builders[Types.Entities.CHEST] = function (id) {
-        return new Chest(id);
-    };
+        [Entities.GUARD](id) {
+            return new NPCs.Guard(id);
+        },
 
-    //====== NPCs ======
+        [Entities.KING](id) {
+            return new NPCs.King(id);
+        },
 
-    EntityFactory.builders[Types.Entities.GUARD] = function (id) {
-        return new NPCs.Guard(id);
-    };
+        [Entities.VILLAGEGIRL](id) {
+            return new NPCs.VillageGirl(id);
+        },
 
-    EntityFactory.builders[Types.Entities.KING] = function (id) {
-        return new NPCs.King(id);
-    };
+        [Entities.VILLAGER](id) {
+            return new NPCs.Villager(id);
+        },
 
-    EntityFactory.builders[Types.Entities.VILLAGEGIRL] = function (id) {
-        return new NPCs.VillageGirl(id);
-    };
+        [Entities.CODER](id) {
+            return new NPCs.Coder(id);
+        },
 
-    EntityFactory.builders[Types.Entities.VILLAGER] = function (id) {
-        return new NPCs.Villager(id);
-    };
+        [Entities.AGENT](id) {
+            return new NPCs.Agent(id);
+        },
 
-    EntityFactory.builders[Types.Entities.CODER] = function (id) {
-        return new NPCs.Coder(id);
-    };
+        [Entities.RICK](id) {
+            return new NPCs.Rick(id);
+        },
 
-    EntityFactory.builders[Types.Entities.AGENT] = function (id) {
-        return new NPCs.Agent(id);
-    };
+        [Entities.SCIENTIST](id) {
+            return new NPCs.Scientist(id);
+        },
 
-    EntityFactory.builders[Types.Entities.RICK] = function (id) {
-        return new NPCs.Rick(id);
-    };
+        [Entities.NYAN](id) {
+            return new NPCs.Nyan(id);
+        },
 
-    EntityFactory.builders[Types.Entities.SCIENTIST] = function (id) {
-        return new NPCs.Scientist(id);
-    };
+        [Entities.PRIEST](id) {
+            return new NPCs.Priest(id);
+        },
 
-    EntityFactory.builders[Types.Entities.NYAN] = function (id) {
-        return new NPCs.Nyan(id);
-    };
+        [Entities.SORCERER](id) {
+            return new NPCs.Sorcerer(id);
+        },
 
-    EntityFactory.builders[Types.Entities.PRIEST] = function (id) {
-        return new NPCs.Priest(id);
-    };
+        [Entities.OCTOCAT](id) {
+            return new NPCs.Octocat(id);
+        },
 
-    EntityFactory.builders[Types.Entities.SORCERER] = function (id) {
-        return new NPCs.Sorcerer(id);
-    };
+        [Entities.BEACHNPC](id) {
+            return new NPCs.BeachNpc(id);
+        },
 
-    EntityFactory.builders[Types.Entities.OCTOCAT] = function (id) {
-        return new NPCs.Octocat(id);
-    };
+        [Entities.FORESTNPC](id) {
+            return new NPCs.ForestNpc(id);
+        },
 
-    EntityFactory.builders[Types.Entities.BEACHNPC] = function (id) {
-        return new NPCs.BeachNpc(id);
-    };
+        [Entities.DESERTNPC](id) {
+            return new NPCs.DesertNpc(id);
+        },
 
-    EntityFactory.builders[Types.Entities.FORESTNPC] = function (id) {
-        return new NPCs.ForestNpc(id);
-    };
-
-    EntityFactory.builders[Types.Entities.DESERTNPC] = function (id) {
-        return new NPCs.DesertNpc(id);
-    };
-
-    EntityFactory.builders[Types.Entities.LAVANPC] = function (id) {
-        return new NPCs.LavaNpc(id);
-    };
-
-    return EntityFactory;
-});
+        [Entities.LAVANPC](id) {
+            return new NPCs.LavaNpc(id);
+        },
+    },
+};

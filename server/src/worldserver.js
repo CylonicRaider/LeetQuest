@@ -1,27 +1,43 @@
-var cls = require("./lib/class"),
-    _ = require("underscore"),
-    Log = require("log"),
-    Entity = require("./entity"),
-    Character = require("./character"),
-    Mob = require("./mob"),
-    Map = require("./map"),
-    Npc = require("./npc"),
-    Player = require("./player"),
-    Item = require("./item"),
-    MobArea = require("./mobarea"),
-    ChestArea = require("./chestarea"),
-    Chest = require("./chest"),
-    Messages = require("./message"),
-    Properties = require("./properties"),
-    Utils = require("./utils"),
-    Types = require("../../shared/js/gametypes");
+import difference from "lodash-es/difference.js";
+import forEach from "lodash-es/forEach.js";
+import includes from "lodash-es/includes.js";
+import isNumber from "lodash-es/isNumber.js";
+import keys from "lodash-es/keys.js";
+import map from "lodash-es/map.js";
+import reject from "lodash-es/reject.js";
+import size from "lodash-es/size.js";
+
+import * as Types from "../../shared/js/gametypes.js";
+import { Entities } from "../../shared/js/gametypes.js";
+
+import Chest from "./chest.js";
+import ChestArea from "./chestarea.js";
+import Item from "./item.js";
+import log from "./log.js";
+import Map from "./map.js";
+import {
+    Population,
+    Destroy,
+    List,
+    Spawn,
+    Damage,
+    Kill,
+    Move,
+    Blink,
+} from "./message.js";
+import Mob from "./mob.js";
+import MobArea from "./mobarea.js";
+import Npc from "./npc.js";
+import Player from "./player.js";
+import Properties from "./properties.js";
+import * as Utils from "./utils.js";
 
 // ======= GAME SERVER ========
 
-module.exports = World = cls.Class.extend({
-    init: function (id, maxPlayers, websocketServer) {
-        var self = this;
+// TODO: use JS Map data structures where appropriate instead of bare objects
 
+export default class World {
+    constructor(id, maxPlayers, websocketServer) {
         this.id = id;
         this.maxPlayers = maxPlayers;
         this.server = websocketServer;
@@ -48,45 +64,40 @@ module.exports = World = cls.Class.extend({
 
         this.zoneGroupsReady = false;
 
-        this.onPlayerConnect(function (player) {
-            player.onRequestPosition(function () {
+        this.onPlayerConnect((player) => {
+            player.onRequestPosition(() => {
                 if (player.lastCheckpoint) {
                     return player.lastCheckpoint.getRandomPosition();
                 } else {
-                    return self.map.getRandomStartingPosition();
+                    return this.map.getRandomStartingPosition();
                 }
             });
         });
 
-        this.onPlayerEnter(function (player) {
-            log.info(player.name + " has joined " + self.id);
+        this.onPlayerEnter((player) => {
+            log.info(`${player.name} has joined ${this.id}`);
 
             if (!player.hasEnteredGame) {
-                self.incrementPlayerCount();
+                this.incrementPlayerCount();
             }
 
             // Number of players in this world
-            self.pushToPlayer(
-                player,
-                new Messages.Population(self.playerCount),
-            );
-            self.pushRelevantEntityListTo(player);
+            this.pushToPlayer(player, new Population(this.playerCount));
+            this.pushRelevantEntityListTo(player);
 
-            var move_callback = function (x, y) {
-                log.debug(
-                    player.name + " is moving to (" + x + ", " + y + ").",
-                );
+            const move_callback = (x, y) => {
+                log.debug(`${player.name} is moving to (${x}, ${y}).`);
 
-                player.forEachAttacker(function (mob) {
-                    var target = self.getEntityById(mob.target);
+                player.forEachAttacker((mob) => {
+                    const target = this.getEntityById(mob.target);
                     if (target) {
-                        var pos = self.findPositionNextTo(mob, target);
+                        const pos = this.findPositionNextTo(mob, target);
                         if (mob.distanceToSpawningPoint(pos.x, pos.y) > 50) {
                             mob.clearTarget();
                             mob.forgetEveryone();
                             player.removeAttacker(mob);
                         } else {
-                            self.moveEntity(mob, pos.x, pos.y);
+                            this.moveEntity(mob, pos.x, pos.y);
                         }
                     }
                 });
@@ -95,86 +106,82 @@ module.exports = World = cls.Class.extend({
             player.onMove(move_callback);
             player.onLootMove(move_callback);
 
-            player.onZone(function () {
-                var hasChangedGroups = self.handleEntityGroupMembership(player);
+            player.onZone(() => {
+                const hasChangedGroups =
+                    this.handleEntityGroupMembership(player);
 
                 if (hasChangedGroups) {
-                    self.pushToPreviousGroups(
-                        player,
-                        new Messages.Destroy(player),
-                    );
-                    self.pushRelevantEntityListTo(player);
+                    this.pushToPreviousGroups(player, new Destroy(player));
+                    this.pushRelevantEntityListTo(player);
                 }
             });
 
-            player.onBroadcast(function (message, ignoreSelf) {
-                self.pushToAdjacentGroups(
+            player.onBroadcast((message, ignoreSelf) => {
+                this.pushToAdjacentGroups(
                     player.group,
                     message,
                     ignoreSelf ? player.id : null,
                 );
             });
 
-            player.onBroadcastToZone(function (message, ignoreSelf) {
-                self.pushToGroup(
+            player.onBroadcastToZone((message, ignoreSelf) => {
+                this.pushToGroup(
                     player.group,
                     message,
                     ignoreSelf ? player.id : null,
                 );
             });
 
-            player.onExit(function () {
-                log.info(player.name + " has left the game.");
-                self.removePlayer(player);
-                self.decrementPlayerCount();
+            player.onExit(() => {
+                log.info(`${player.name} has left the game.`);
+                this.removePlayer(player);
+                this.decrementPlayerCount();
 
-                if (self.removed_callback) {
-                    self.removed_callback();
+                if (this.removed_callback) {
+                    this.removed_callback();
                 }
             });
 
-            if (self.added_callback) {
-                self.added_callback();
+            if (this.added_callback) {
+                this.added_callback();
             }
         });
 
         // Called when an entity is attacked by another entity
-        this.onEntityAttack(function (attacker) {
-            var target = self.getEntityById(attacker.target);
+        this.onEntityAttack((attacker) => {
+            const target = this.getEntityById(attacker.target);
             if (target && attacker.type === "mob") {
-                var pos = self.findPositionNextTo(attacker, target);
-                self.moveEntity(attacker, pos.x, pos.y);
+                const pos = this.findPositionNextTo(attacker, target);
+                this.moveEntity(attacker, pos.x, pos.y);
             }
         });
 
-        this.onRegenTick(function () {
-            self.forEachCharacter(function (character) {
+        this.onRegenTick(() => {
+            this.forEachCharacter((character) => {
                 if (!character.hasFullHealth()) {
                     character.regenHealthBy(
                         Math.floor(character.maxHitPoints / 25),
                     );
 
                     if (character.type === "player") {
-                        self.pushToPlayer(character, character.regen());
+                        this.pushToPlayer(character, character.regen());
                     }
                 }
             });
         });
-    },
+    }
 
-    run: function (mapFilePath) {
-        var self = this;
-
+    run(mapFilePath) {
         this.map = new Map(mapFilePath);
 
-        this.map.ready(function () {
-            self.initZoneGroups();
+        this.map.ready(() => {
+            this.initZoneGroups();
 
-            self.map.generateCollisionGrid();
+            this.map.generateCollisionGrid();
 
             // Populate all mob "roaming" areas
-            _.each(self.map.mobAreas, function (a) {
-                var area = new MobArea(
+            forEach(this.map.mobAreas, (a) => {
+                const area = new MobArea(
                     a.id,
                     a.nb,
                     a.type,
@@ -182,17 +189,17 @@ module.exports = World = cls.Class.extend({
                     a.y,
                     a.width,
                     a.height,
-                    self,
+                    this,
                 );
                 area.spawnMobs();
-                area.onEmpty(self.handleEmptyMobArea.bind(self, area));
+                area.onEmpty(this.handleEmptyMobArea.bind(this, area));
 
-                self.mobAreas.push(area);
+                this.mobAreas.push(area);
             });
 
             // Create all chest areas
-            _.each(self.map.chestAreas, function (a) {
-                var area = new ChestArea(
+            forEach(this.map.chestAreas, (a) => {
+                const area = new ChestArea(
                     a.id,
                     a.x,
                     a.y,
@@ -201,178 +208,157 @@ module.exports = World = cls.Class.extend({
                     a.tx,
                     a.ty,
                     a.i,
-                    self,
+                    this,
                 );
-                self.chestAreas.push(area);
-                area.onEmpty(self.handleEmptyChestArea.bind(self, area));
+                this.chestAreas.push(area);
+                area.onEmpty(this.handleEmptyChestArea.bind(this, area));
             });
 
             // Spawn static chests
-            _.each(self.map.staticChests, function (chest) {
-                var c = self.createChest(chest.x, chest.y, chest.i);
-                self.addStaticItem(c);
+            forEach(this.map.staticChests, (chest) => {
+                const c = this.createChest(chest.x, chest.y, chest.i);
+                this.addStaticItem(c);
             });
 
             // Spawn static entities
-            self.spawnStaticEntities();
+            this.spawnStaticEntities();
 
             // Set maximum number of entities contained in each chest area
-            _.each(self.chestAreas, function (area) {
+            forEach(this.chestAreas, (area) => {
                 area.setNumberOfEntities(area.entities.length);
             });
         });
 
-        var regenCount = this.ups * 2;
-        var updateCount = 0;
-        setInterval(function () {
-            self.processGroups();
-            self.processQueues();
+        const regenCount = this.ups * 2;
+        let updateCount = 0;
+        setInterval(() => {
+            this.processGroups();
+            this.processQueues();
 
             if (updateCount < regenCount) {
                 updateCount += 1;
             } else {
-                if (self.regen_callback) {
-                    self.regen_callback();
+                if (this.regen_callback) {
+                    this.regen_callback();
                 }
                 updateCount = 0;
             }
         }, 1000 / this.ups);
 
-        log.info(
-            "" +
-                this.id +
-                " created (capacity: " +
-                this.maxPlayers +
-                " players).",
-        );
-    },
+        log.info(`${this.id} created (capacity: ${this.maxPlayers} players).`);
+    }
 
-    setUpdatesPerSecond: function (ups) {
+    setUpdatesPerSecond(ups) {
         this.ups = ups;
-    },
+    }
 
-    onInit: function (callback) {
+    onInit(callback) {
         this.init_callback = callback;
-    },
+    }
 
-    onPlayerConnect: function (callback) {
+    onPlayerConnect(callback) {
         this.connect_callback = callback;
-    },
+    }
 
-    onPlayerEnter: function (callback) {
+    onPlayerEnter(callback) {
         this.enter_callback = callback;
-    },
+    }
 
-    onPlayerAdded: function (callback) {
+    onPlayerAdded(callback) {
         this.added_callback = callback;
-    },
+    }
 
-    onPlayerRemoved: function (callback) {
+    onPlayerRemoved(callback) {
         this.removed_callback = callback;
-    },
+    }
 
-    onRegenTick: function (callback) {
+    onRegenTick(callback) {
         this.regen_callback = callback;
-    },
+    }
 
-    pushRelevantEntityListTo: function (player) {
-        var entities;
-
+    pushRelevantEntityListTo(player) {
         if (player && player.group in this.groups) {
-            entities = _.keys(this.groups[player.group].entities);
-            entities = _.reject(entities, function (id) {
-                return id == player.id;
-            });
-            entities = _.map(entities, function (id) {
-                return parseInt(id);
-            });
+            let entities = keys(this.groups[player.group].entities);
+            entities = reject(entities, (id) => id == player.id);
+            entities = map(entities, (id) => parseInt(id));
             if (entities) {
-                this.pushToPlayer(player, new Messages.List(entities));
+                this.pushToPlayer(player, new List(entities));
             }
         }
-    },
+    }
 
-    pushSpawnsToPlayer: function (player, ids) {
-        var self = this;
-
-        _.each(ids, function (id) {
-            var entity = self.getEntityById(id);
+    pushSpawnsToPlayer(player, ids) {
+        forEach(ids, (id) => {
+            const entity = this.getEntityById(id);
             if (entity) {
-                self.pushToPlayer(player, new Messages.Spawn(entity));
+                this.pushToPlayer(player, new Spawn(entity));
             }
         });
 
-        log.debug("Pushed " + _.size(ids) + " new spawns to " + player.id);
-    },
+        log.debug(`Pushed ${size(ids)} new spawns to ${player.id}`);
+    }
 
-    pushToPlayer: function (player, message) {
+    pushToPlayer(player, message) {
         if (player && player.id in this.outgoingQueues) {
             this.outgoingQueues[player.id].push(message.serialize());
         } else {
             log.error("pushToPlayer: player was undefined");
         }
-    },
+    }
 
-    pushToGroup: function (groupId, message, ignoredPlayer) {
-        var self = this,
-            group = this.groups[groupId];
+    pushToGroup(groupId, message, ignoredPlayer) {
+        const group = this.groups[groupId];
 
         if (group) {
-            _.each(group.players, function (playerId) {
+            forEach(group.players, (playerId) => {
                 if (playerId != ignoredPlayer) {
-                    self.pushToPlayer(self.getEntityById(playerId), message);
+                    this.pushToPlayer(this.getEntityById(playerId), message);
                 }
             });
         } else {
-            log.error("groupId: " + groupId + " is not a valid group");
+            log.error(`groupId: ${groupId} is not a valid group`);
         }
-    },
+    }
 
-    pushToAdjacentGroups: function (groupId, message, ignoredPlayer) {
-        var self = this;
-        self.map.forEachAdjacentGroup(groupId, function (id) {
-            self.pushToGroup(id, message, ignoredPlayer);
+    pushToAdjacentGroups(groupId, message, ignoredPlayer) {
+        this.map.forEachAdjacentGroup(groupId, (id) => {
+            this.pushToGroup(id, message, ignoredPlayer);
         });
-    },
+    }
 
-    pushToPreviousGroups: function (player, message) {
-        var self = this;
-
+    pushToPreviousGroups(player, message) {
         // Push this message to all groups which are not going to be updated anymore,
         // since the player left them.
-        _.each(player.recentlyLeftGroups, function (id) {
-            self.pushToGroup(id, message);
+        forEach(player.recentlyLeftGroups, (id) => {
+            this.pushToGroup(id, message);
         });
         player.recentlyLeftGroups = [];
-    },
+    }
 
-    pushBroadcast: function (message, ignoredPlayer) {
-        for (var id in this.outgoingQueues) {
+    pushBroadcast(message, ignoredPlayer) {
+        for (const id in this.outgoingQueues) {
             if (id != ignoredPlayer) {
                 this.outgoingQueues[id].push(message.serialize());
             }
         }
-    },
+    }
 
-    processQueues: function () {
-        var self = this,
-            connection;
-
-        for (var id in this.outgoingQueues) {
+    processQueues() {
+        for (const id in this.outgoingQueues) {
             if (this.outgoingQueues[id].length > 0) {
-                connection = this.server.getConnection(id);
+                const connection = this.server.getConnection(id);
                 connection.send(this.outgoingQueues[id]);
                 this.outgoingQueues[id] = [];
             }
         }
-    },
+    }
 
-    addEntity: function (entity) {
+    addEntity(entity) {
         this.entities[entity.id] = entity;
         this.handleEntityGroupMembership(entity);
-    },
+    }
 
-    removeEntity: function (entity) {
+    removeEntity(entity) {
         if (entity.id in this.entities) {
             delete this.entities[entity.id];
         }
@@ -393,127 +379,125 @@ module.exports = World = cls.Class.extend({
         log.debug(
             "Removed " + Types.getKindAsString(entity.kind) + " : " + entity.id,
         );
-    },
+    }
 
-    addPlayer: function (player) {
+    addPlayer(player) {
         this.addEntity(player);
         this.players[player.id] = player;
         this.outgoingQueues[player.id] = [];
 
         //log.info("Added player : " + player.id);
-    },
+    }
 
-    removePlayer: function (player) {
+    removePlayer(player) {
         player.broadcast(player.despawn());
         this.removeEntity(player);
         delete this.players[player.id];
         delete this.outgoingQueues[player.id];
-    },
+    }
 
-    addMob: function (mob) {
+    addMob(mob) {
         this.addEntity(mob);
         this.mobs[mob.id] = mob;
-    },
+    }
 
-    addNpc: function (kind, x, y) {
-        var npc = new Npc("8" + x + "" + y, kind, x, y);
+    addNpc(kind, x, y) {
+        const npc = new Npc(`8${x}${y}`, kind, x, y);
         this.addEntity(npc);
         this.npcs[npc.id] = npc;
 
         return npc;
-    },
+    }
 
-    addItem: function (item) {
+    addItem(item) {
         this.addEntity(item);
         this.items[item.id] = item;
 
         return item;
-    },
+    }
 
-    createItem: function (kind, x, y) {
-        var id = "9" + this.itemCount++,
-            item = null;
+    createItem(kind, x, y) {
+        const id = `9${this.itemCount++}`;
+        let item;
 
-        if (kind === Types.Entities.CHEST) {
+        if (kind === Entities.CHEST) {
             item = new Chest(id, x, y);
         } else {
             item = new Item(id, kind, x, y);
         }
         return item;
-    },
+    }
 
-    createChest: function (x, y, items) {
-        var chest = this.createItem(Types.Entities.CHEST, x, y);
+    createChest(x, y, items) {
+        const chest = this.createItem(Entities.CHEST, x, y);
         chest.setItems(items);
         return chest;
-    },
+    }
 
-    addStaticItem: function (item) {
+    addStaticItem(item) {
         item.isStatic = true;
         item.onRespawn(this.addStaticItem.bind(this, item));
 
         return this.addItem(item);
-    },
+    }
 
-    addItemFromChest: function (kind, x, y) {
-        var item = this.createItem(kind, x, y);
+    addItemFromChest(kind, x, y) {
+        const item = this.createItem(kind, x, y);
         item.isFromChest = true;
 
         return this.addItem(item);
-    },
+    }
 
     /**
      * The mob will no longer be registered as an attacker of its current target.
      */
-    clearMobAggroLink: function (mob) {
-        var player = null;
+    clearMobAggroLink(mob) {
         if (mob.target) {
-            player = this.getEntityById(mob.target);
+            const player = this.getEntityById(mob.target);
             if (player) {
                 player.removeAttacker(mob);
             }
         }
-    },
+    }
 
-    clearMobHateLinks: function (mob) {
-        var self = this;
+    clearMobHateLinks(mob) {
         if (mob) {
-            _.each(mob.hatelist, function (obj) {
-                var player = self.getEntityById(obj.id);
+            forEach(mob.hatelist, (obj) => {
+                const player = this.getEntityById(obj.id);
                 if (player) {
                     player.removeHater(mob);
                 }
             });
         }
-    },
+    }
 
-    forEachEntity: function (callback) {
-        for (var id in this.entities) {
+    forEachEntity(callback) {
+        for (const id in this.entities) {
             callback(this.entities[id]);
         }
-    },
+    }
 
-    forEachPlayer: function (callback) {
-        for (var id in this.players) {
+    forEachPlayer(callback) {
+        for (const id in this.players) {
             callback(this.players[id]);
         }
-    },
+    }
 
-    forEachMob: function (callback) {
-        for (var id in this.mobs) {
+    forEachMob(callback) {
+        for (const id in this.mobs) {
             callback(this.mobs[id]);
         }
-    },
+    }
 
-    forEachCharacter: function (callback) {
+    forEachCharacter(callback) {
         this.forEachPlayer(callback);
         this.forEachMob(callback);
-    },
+    }
 
-    handleMobHate: function (mobId, playerId, hatePoints) {
-        var mob = this.getEntityById(mobId),
-            player = this.getEntityById(playerId),
-            mostHated;
+    handleMobHate(mobId, playerId, hatePoints) {
+        const mob = this.getEntityById(mobId),
+            player = this.getEntityById(playerId);
+        let mostHated;
 
         if (player && mob) {
             mob.increaseHateFor(playerId, hatePoints);
@@ -524,10 +508,10 @@ module.exports = World = cls.Class.extend({
                 this.chooseMobTarget(mob);
             }
         }
-    },
+    }
 
-    chooseMobTarget: function (mob, hateRank) {
-        var player = this.getEntityById(mob.getHatedPlayerId(hateRank));
+    chooseMobTarget(mob, hateRank) {
+        const player = this.getEntityById(mob.getHatedPlayerId(hateRank));
 
         // If the mob is not already attacking the player, create an attack link between them.
         if (player && !(mob.id in player.attackers)) {
@@ -537,33 +521,33 @@ module.exports = World = cls.Class.extend({
             mob.setTarget(player);
 
             this.broadcastAttacker(mob);
-            log.debug(mob.id + " is now attacking " + player.id);
+            log.debug(`${mob.id} is now attacking ${player.id}`);
         }
-    },
+    }
 
-    onEntityAttack: function (callback) {
+    onEntityAttack(callback) {
         this.attack_callback = callback;
-    },
+    }
 
-    getEntityById: function (id) {
+    getEntityById(id) {
         if (id in this.entities) {
             return this.entities[id];
         } else {
-            log.error("Unknown entity : " + id);
+            log.error(`Unknown entity : ${id}`);
         }
-    },
+    }
 
-    getPlayerCount: function () {
-        var count = 0;
-        for (var p in this.players) {
-            if (this.players.hasOwnProperty(p)) {
+    getPlayerCount() {
+        let count = 0;
+        for (const p in this.players) {
+            if (Object.hasOwnProperty.call(this.players, p)) {
                 count += 1;
             }
         }
         return count;
-    },
+    }
 
-    broadcastAttacker: function (character) {
+    broadcastAttacker(character) {
         if (character) {
             this.pushToAdjacentGroups(
                 character.group,
@@ -574,11 +558,9 @@ module.exports = World = cls.Class.extend({
         if (this.attack_callback) {
             this.attack_callback(character);
         }
-    },
+    }
 
-    handleHurtEntity: function (entity, attacker, damage) {
-        var self = this;
-
+    handleHurtEntity(entity, attacker, damage) {
         if (entity.type === "player") {
             // A player is only aware of his own hitpoints
             this.pushToPlayer(entity, entity.health());
@@ -586,16 +568,16 @@ module.exports = World = cls.Class.extend({
 
         if (entity.type === "mob") {
             // Let the mob's attacker (player) know how much damage was inflicted
-            this.pushToPlayer(attacker, new Messages.Damage(entity, damage));
+            this.pushToPlayer(attacker, new Damage(entity, damage));
         }
 
         // If the entity is about to die
         if (entity.hitPoints <= 0) {
             if (entity.type === "mob") {
-                var mob = entity,
+                const mob = entity,
                     item = this.getDroppedItem(mob);
 
-                this.pushToPlayer(attacker, new Messages.Kill(mob));
+                this.pushToPlayer(attacker, new Kill(mob));
                 this.pushToAdjacentGroups(mob.group, mob.despawn()); // Despawn must be enqueued before the item drop
                 if (item) {
                     this.pushToAdjacentGroups(mob.group, mob.drop(item));
@@ -610,101 +592,101 @@ module.exports = World = cls.Class.extend({
 
             this.removeEntity(entity);
         }
-    },
+    }
 
-    despawn: function (entity) {
+    despawn(entity) {
         this.pushToAdjacentGroups(entity.group, entity.despawn());
 
         if (entity.id in this.entities) {
             this.removeEntity(entity);
         }
-    },
+    }
 
-    spawnStaticEntities: function () {
-        var self = this,
-            count = 0;
+    spawnStaticEntities() {
+        let count = 0;
 
-        _.each(this.map.staticEntities, function (kindName, tid) {
-            var kind = Types.getKindFromString(kindName),
-                pos = self.map.tileIndexToGridPosition(tid);
+        forEach(this.map.staticEntities, (kindName, tid) => {
+            const kind = Types.getKindFromString(kindName),
+                pos = this.map.tileIndexToGridPosition(tid);
 
             if (Types.isNpc(kind)) {
-                self.addNpc(kind, pos.x + 1, pos.y);
+                this.addNpc(kind, pos.x + 1, pos.y);
             }
             if (Types.isMob(kind)) {
-                var mob = new Mob("7" + kind + count++, kind, pos.x + 1, pos.y);
-                mob.onRespawn(function () {
+                const mob = new Mob(
+                    `7${kind}${count++}`,
+                    kind,
+                    pos.x + 1,
+                    pos.y,
+                );
+                mob.onRespawn(() => {
                     mob.isDead = false;
-                    self.addMob(mob);
+                    this.addMob(mob);
                     if (mob.area && mob.area instanceof ChestArea) {
                         mob.area.addToArea(mob);
                     }
                 });
-                mob.onMove(self.onMobMoveCallback.bind(self));
-                self.addMob(mob);
-                self.tryAddingMobToChestArea(mob);
+                mob.onMove(this.onMobMoveCallback.bind(this));
+                this.addMob(mob);
+                this.tryAddingMobToChestArea(mob);
             }
             if (Types.isItem(kind)) {
-                self.addStaticItem(self.createItem(kind, pos.x + 1, pos.y));
+                this.addStaticItem(this.createItem(kind, pos.x + 1, pos.y));
             }
         });
-    },
+    }
 
-    isValidPosition: function (x, y) {
-        if (
+    isValidPosition(x, y) {
+        return (
             this.map &&
-            _.isNumber(x) &&
-            _.isNumber(y) &&
+            isNumber(x) &&
+            isNumber(y) &&
             !this.map.isOutOfBounds(x, y) &&
             !this.map.isColliding(x, y)
-        ) {
-            return true;
-        }
-        return false;
-    },
+        );
+    }
 
-    handlePlayerVanish: function (player) {
-        var self = this,
-            previousAttackers = [];
+    handlePlayerVanish(player) {
+        const previousAttackers = [];
 
         // When a player dies or teleports, all of his attackers go and attack their second most hated player.
-        player.forEachAttacker(function (mob) {
+        player.forEachAttacker((mob) => {
             previousAttackers.push(mob);
-            self.chooseMobTarget(mob, 2);
+            this.chooseMobTarget(mob, 2);
         });
 
-        _.each(previousAttackers, function (mob) {
+        forEach(previousAttackers, (mob) => {
             player.removeAttacker(mob);
             mob.clearTarget();
             mob.forgetPlayer(player.id, 1000);
         });
 
         this.handleEntityGroupMembership(player);
-    },
+    }
 
-    setPlayerCount: function (count) {
+    setPlayerCount(count) {
         this.playerCount = count;
-    },
+    }
 
-    incrementPlayerCount: function () {
+    incrementPlayerCount() {
         this.setPlayerCount(this.playerCount + 1);
-    },
+    }
 
-    decrementPlayerCount: function () {
+    decrementPlayerCount() {
         if (this.playerCount > 0) {
             this.setPlayerCount(this.playerCount - 1);
         }
-    },
+    }
 
-    getDroppedItem: function (mob) {
-        var kind = Types.getKindAsString(mob.kind),
+    getDroppedItem(mob) {
+        const kind = Types.getKindAsString(mob.kind),
             drops = Properties[kind].drops,
-            v = Utils.random(100),
-            p = 0,
-            item = null;
+            v = Utils.random(100);
+        let p = 0,
+            item;
 
-        for (var itemName in drops) {
-            var percentage = drops[itemName];
+        for (const itemName in drops) {
+            const percentage = drops[itemName];
 
             p += percentage;
             if (v <= p) {
@@ -720,15 +702,15 @@ module.exports = World = cls.Class.extend({
         }
 
         return item;
-    },
+    }
 
-    onMobMoveCallback: function (mob) {
-        this.pushToAdjacentGroups(mob.group, new Messages.Move(mob));
+    onMobMoveCallback(mob) {
+        this.pushToAdjacentGroups(mob.group, new Move(mob));
         this.handleEntityGroupMembership(mob);
-    },
+    }
 
-    findPositionNextTo: function (entity, target) {
-        var valid = false,
+    findPositionNextTo(entity, target) {
+        let valid = false,
             pos;
 
         while (!valid) {
@@ -736,58 +718,56 @@ module.exports = World = cls.Class.extend({
             valid = this.isValidPosition(pos.x, pos.y);
         }
         return pos;
-    },
+    }
 
-    initZoneGroups: function () {
-        var self = this;
-
-        this.map.forEachGroup(function (id) {
-            self.groups[id] = { entities: {}, players: [], incoming: [] };
+    initZoneGroups() {
+        this.map.forEachGroup((id) => {
+            this.groups[id] = {
+                entities: {},
+                players: [],
+                incoming: [],
+            };
         });
         this.zoneGroupsReady = true;
-    },
+    }
 
-    removeFromGroups: function (entity) {
-        var self = this,
-            oldGroups = [];
+    removeFromGroups(entity) {
+        const oldGroups = [];
 
         if (entity && entity.group) {
-            var group = this.groups[entity.group];
+            const group = this.groups[entity.group];
             if (entity instanceof Player) {
-                group.players = _.reject(group.players, function (id) {
-                    return id === entity.id;
-                });
+                group.players = reject(group.players, (id) => id === entity.id);
             }
 
-            this.map.forEachAdjacentGroup(entity.group, function (id) {
-                if (entity.id in self.groups[id].entities) {
-                    delete self.groups[id].entities[entity.id];
+            this.map.forEachAdjacentGroup(entity.group, (id) => {
+                if (entity.id in this.groups[id].entities) {
+                    delete this.groups[id].entities[entity.id];
                     oldGroups.push(id);
                 }
             });
             entity.group = null;
         }
         return oldGroups;
-    },
+    }
 
     /**
      * Registers an entity as "incoming" into several groups, meaning that it just entered them.
      * All players inside these groups will receive a Spawn message when WorldServer.processGroups is called.
      */
-    addAsIncomingToGroup: function (entity, groupId) {
-        var self = this,
-            isChest = entity && entity instanceof Chest,
+    addAsIncomingToGroup(entity, groupId) {
+        const isChest = entity && entity instanceof Chest,
             isItem = entity && entity instanceof Item,
             isDroppedItem =
                 entity && isItem && !entity.isStatic && !entity.isFromChest;
 
         if (entity && groupId) {
-            this.map.forEachAdjacentGroup(groupId, function (id) {
-                var group = self.groups[id];
+            this.map.forEachAdjacentGroup(groupId, (id) => {
+                const group = this.groups[id];
 
                 if (group) {
                     if (
-                        !_.include(group.entities, entity.id) &&
+                        !includes(group.entities, entity.id) &&
                         //  Items dropped off of mobs are handled differently via DROP messages. See handleHurtEntity.
                         (!isItem || isChest || (isItem && !isDroppedItem))
                     ) {
@@ -796,15 +776,14 @@ module.exports = World = cls.Class.extend({
                 }
             });
         }
-    },
+    }
 
-    addToGroup: function (entity, groupId) {
-        var self = this,
-            newGroups = [];
+    addToGroup(entity, groupId) {
+        const newGroups = [];
 
         if (entity && groupId && groupId in this.groups) {
-            this.map.forEachAdjacentGroup(groupId, function (id) {
-                self.groups[id].entities[entity.id] = entity;
+            this.map.forEachAdjacentGroup(groupId, (id) => {
+                this.groups[id].entities[entity.id] = entity;
                 newGroups.push(id);
             });
             entity.group = groupId;
@@ -814,134 +793,114 @@ module.exports = World = cls.Class.extend({
             }
         }
         return newGroups;
-    },
+    }
 
-    logGroupPlayers: function (groupId) {
-        log.debug("Players inside group " + groupId + ":");
-        _.each(this.groups[groupId].players, function (id) {
-            log.debug("- player " + id);
+    logGroupPlayers(groupId) {
+        log.debug(`Players inside group ${groupId}:`);
+        forEach(this.groups[groupId].players, (id) => {
+            log.debug(`- player ${id}`);
         });
-    },
+    }
 
-    handleEntityGroupMembership: function (entity) {
-        var hasChangedGroups = false;
+    handleEntityGroupMembership(entity) {
+        let hasChangedGroups = false;
         if (entity) {
-            var groupId = this.map.getGroupIdFromPosition(entity.x, entity.y);
+            const groupId = this.map.getGroupIdFromPosition(entity.x, entity.y);
             if (!entity.group || (entity.group && entity.group !== groupId)) {
                 hasChangedGroups = true;
                 this.addAsIncomingToGroup(entity, groupId);
-                var oldGroups = this.removeFromGroups(entity);
-                var newGroups = this.addToGroup(entity, groupId);
+                const oldGroups = this.removeFromGroups(entity);
+                const newGroups = this.addToGroup(entity, groupId);
 
-                if (_.size(oldGroups) > 0) {
-                    entity.recentlyLeftGroups = _.difference(
+                if (size(oldGroups) > 0) {
+                    entity.recentlyLeftGroups = difference(
                         oldGroups,
                         newGroups,
                     );
-                    log.debug("group diff: " + entity.recentlyLeftGroups);
+                    log.debug(`group diff: ${entity.recentlyLeftGroups}`);
                 }
             }
         }
         return hasChangedGroups;
-    },
+    }
 
-    processGroups: function () {
-        var self = this;
-
+    processGroups() {
         if (this.zoneGroupsReady) {
-            this.map.forEachGroup(function (id) {
-                var spawns = [];
-                if (self.groups[id].incoming.length > 0) {
-                    spawns = _.each(
-                        self.groups[id].incoming,
-                        function (entity) {
-                            if (entity instanceof Player) {
-                                self.pushToGroup(
-                                    id,
-                                    new Messages.Spawn(entity),
-                                    entity.id,
-                                );
-                            } else {
-                                self.pushToGroup(
-                                    id,
-                                    new Messages.Spawn(entity),
-                                );
-                            }
-                        },
-                    );
-                    self.groups[id].incoming = [];
+            this.map.forEachGroup((id) => {
+                let spawns = [];
+                if (this.groups[id].incoming.length > 0) {
+                    spawns = forEach(this.groups[id].incoming, (entity) => {
+                        if (entity instanceof Player) {
+                            this.pushToGroup(id, new Spawn(entity), entity.id);
+                        } else {
+                            this.pushToGroup(id, new Spawn(entity));
+                        }
+                    });
+                    this.groups[id].incoming = [];
                 }
             });
         }
-    },
+    }
 
-    moveEntity: function (entity, x, y) {
+    moveEntity(entity, x, y) {
         if (entity) {
             entity.setPosition(x, y);
             this.handleEntityGroupMembership(entity);
         }
-    },
+    }
 
-    handleItemDespawn: function (item) {
-        var self = this;
-
+    handleItemDespawn(item) {
         if (item) {
             item.handleDespawn({
                 beforeBlinkDelay: 10000,
-                blinkCallback: function () {
-                    self.pushToAdjacentGroups(
-                        item.group,
-                        new Messages.Blink(item),
-                    );
+                blinkCallback: () => {
+                    this.pushToAdjacentGroups(item.group, new Blink(item));
                 },
                 blinkingDuration: 4000,
-                despawnCallback: function () {
-                    self.pushToAdjacentGroups(
-                        item.group,
-                        new Messages.Destroy(item),
-                    );
-                    self.removeEntity(item);
+                despawnCallback: () => {
+                    this.pushToAdjacentGroups(item.group, new Destroy(item));
+                    this.removeEntity(item);
                 },
             });
         }
-    },
+    }
 
-    handleEmptyMobArea: function (area) {},
+    handleEmptyMobArea(area) {}
 
-    handleEmptyChestArea: function (area) {
+    handleEmptyChestArea(area) {
         if (area) {
-            var chest = this.addItem(
+            const chest = this.addItem(
                 this.createChest(area.chestX, area.chestY, area.items),
             );
             this.handleItemDespawn(chest);
         }
-    },
+    }
 
-    handleOpenedChest: function (chest, player) {
+    handleOpenedChest(chest, player) {
         this.pushToAdjacentGroups(chest.group, chest.despawn());
         this.removeEntity(chest);
 
-        var kind = chest.getRandomItem();
+        const kind = chest.getRandomItem();
         if (kind) {
-            var item = this.addItemFromChest(kind, chest.x, chest.y);
+            const item = this.addItemFromChest(kind, chest.x, chest.y);
             this.handleItemDespawn(item);
         }
-    },
+    }
 
-    tryAddingMobToChestArea: function (mob) {
-        _.each(this.chestAreas, function (area) {
+    tryAddingMobToChestArea(mob) {
+        forEach(this.chestAreas, (area) => {
             if (area.contains(mob)) {
                 area.addToArea(mob);
             }
         });
-    },
+    }
 
-    updatePopulation: function (totalPlayers) {
+    updatePopulation(totalPlayers) {
         this.pushBroadcast(
-            new Messages.Population(
+            new Population(
                 this.playerCount,
                 totalPlayers ? totalPlayers : this.playerCount,
             ),
         );
-    },
-});
+    }
+}
