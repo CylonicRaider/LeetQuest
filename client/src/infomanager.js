@@ -1,68 +1,71 @@
-
-define(function() {
-
+define(function () {
     var InfoManager = Class.extend({
-        init: function(game) {
+        init: function (game) {
             this.game = game;
             this.infos = {};
             this.destroyQueue = [];
         },
-    
-        addDamageInfo: function(value, x, y, type) {
+
+        addDamageInfo: function (value, x, y, type) {
             var time = this.game.currentTime,
-                id = time+""+Math.abs(value)+""+x+""+y,
+                id = time + "" + Math.abs(value) + "" + x + "" + y,
                 self = this,
-                info = new DamageInfo(id, value, x, y, DamageInfo.DURATION, type);
-        
-            info.onDestroy(function(id) {
+                info = new DamageInfo(
+                    id,
+                    value,
+                    x,
+                    y,
+                    DamageInfo.DURATION,
+                    type,
+                );
+
+            info.onDestroy(function (id) {
                 self.destroyQueue.push(id);
             });
             this.infos[id] = info;
         },
-    
-        forEachInfo: function(callback) {
+
+        forEachInfo: function (callback) {
             var self = this;
-        
-            _.each(this.infos, function(info, id) {
+
+            _.each(this.infos, function (info, id) {
                 callback(info);
             });
         },
-    
-        update: function(time) {
+
+        update: function (time) {
             var self = this;
-        
-            this.forEachInfo(function(info) {
+
+            this.forEachInfo(function (info) {
                 info.update(time);
             });
-        
-            _.each(this.destroyQueue, function(id) {
+
+            _.each(this.destroyQueue, function (id) {
                 delete self.infos[id];
             });
             this.destroyQueue = [];
-        }
+        },
     });
 
-
     var damageInfoColors = {
-        "received": {
+        received: {
             fill: "rgb(255, 50, 50)",
-            stroke: "rgb(255, 180, 180)"
+            stroke: "rgb(255, 180, 180)",
         },
-        "inflicted": {
+        inflicted: {
             fill: "white",
-            stroke: "#373737"
+            stroke: "#373737",
         },
-        "healed": {
+        healed: {
             fill: "rgb(80, 255, 80)",
-            stroke: "rgb(50, 120, 50)"
-        }
+            stroke: "rgb(50, 120, 50)",
+        },
     };
-
 
     var DamageInfo = Class.extend({
         DURATION: 1000,
-    
-        init: function(id, value, x, y, duration, type) {
+
+        init: function (id, value, x, y, duration, type) {
             this.id = id;
             this.value = value;
             this.duration = duration;
@@ -74,36 +77,36 @@ define(function() {
             this.fillColor = damageInfoColors[type].fill;
             this.strokeColor = damageInfoColors[type].stroke;
         },
-    
-        isTimeToAnimate: function(time) {
-        	return (time - this.lastTime) > this.speed;
+
+        isTimeToAnimate: function (time) {
+            return time - this.lastTime > this.speed;
         },
-    
-        update: function(time) {
-            if(this.isTimeToAnimate(time)) {
+
+        update: function (time) {
+            if (this.isTimeToAnimate(time)) {
                 this.lastTime = time;
                 this.tick();
             }
         },
-    
-        tick: function() {
+
+        tick: function () {
             this.y -= 1;
             this.opacity -= 0.07;
-            if(this.opacity < 0) {
+            if (this.opacity < 0) {
                 this.destroy();
             }
         },
-    
-        onDestroy: function(callback) {
+
+        onDestroy: function (callback) {
             this.destroy_callback = callback;
         },
-    
-        destroy: function() {
-            if(this.destroy_callback) {
+
+        destroy: function () {
+            if (this.destroy_callback) {
                 this.destroy_callback(this.id);
             }
-        }
+        },
     });
-    
+
     return InfoManager;
 });

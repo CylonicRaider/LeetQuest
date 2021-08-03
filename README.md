@@ -1,12 +1,9 @@
-LeetQuest
-=========
+# LeetQuest
 
 A Web MMORPG forked off
 [BrowserQuest](https://github.com/mozilla/BrowserQuest).
 
-
-Documentation
--------------
+## Documentation
 
 **Building**: To build the client, run `npm run build`.
 
@@ -24,18 +21,14 @@ client (if the latter is built).
 More detailed documentation is located in the `client` and `server`
 directories.
 
-
-License
--------
+## License
 
 Code is licensed under MPL 2.0. Content is licensed under CC-BY-SA 3.0.
 See the LICENSE file for details.
 
-
-Credits
--------
+## Credits
 
 BrowserQuest was created by [Little Workshop](https://www.littleworkshop.fr):
 
-* Franck Lecollinet - [@whatthefranck](https://twitter.com/whatthefranck)
-* Guillaume Lecollinet - [@glecollinet](https://twitter.com/glecollinet)
+-   Franck Lecollinet - [@whatthefranck](https://twitter.com/whatthefranck)
+-   Guillaume Lecollinet - [@glecollinet](https://twitter.com/glecollinet)

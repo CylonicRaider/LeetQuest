@@ -1,4 +1,3 @@
-
 Types = {
     Messages: {
         HELLO: 0,
@@ -27,12 +26,12 @@ Types = {
         HP: 23,
         BLINK: 24,
         OPEN: 25,
-        CHECK: 26
+        CHECK: 26,
     },
-    
+
     Entities: {
         WARRIOR: 1,
-        
+
         // Mobs
         RAT: 2,
         SKELETON: 3,
@@ -47,7 +46,7 @@ Types = {
         SKELETON2: 12,
         BOSS: 13,
         DEATHKNIGHT: 14,
-        
+
         // Armors
         FIREFOX: 20,
         CLOTHARMOR: 21,
@@ -56,14 +55,14 @@ Types = {
         PLATEARMOR: 24,
         REDARMOR: 25,
         GOLDENARMOR: 26,
-        
+
         // Objects
         FLASK: 35,
         BURGER: 36,
         CHEST: 37,
         FIREPOTION: 38,
         CAKE: 39,
-        
+
         // NPCs
         GUARD: 40,
         KING: 41,
@@ -81,7 +80,7 @@ Types = {
         DESERTNPC: 53,
         LAVANPC: 54,
         CODER: 55,
-        
+
         // Weapons
         SWORD1: 60,
         SWORD2: 61,
@@ -89,22 +88,22 @@ Types = {
         GOLDENSWORD: 63,
         MORNINGSTAR: 64,
         AXE: 65,
-        BLUESWORD: 66
+        BLUESWORD: 66,
     },
-    
+
     Orientations: {
         UP: 1,
         DOWN: 2,
         LEFT: 3,
-        RIGHT: 4
-    }
+        RIGHT: 4,
+    },
 };
 
 var kinds = {
     warrior: [Types.Entities.WARRIOR, "player"],
-    
+
     rat: [Types.Entities.RAT, "mob"],
-    skeleton: [Types.Entities.SKELETON , "mob"],
+    skeleton: [Types.Entities.SKELETON, "mob"],
     goblin: [Types.Entities.GOBLIN, "mob"],
     ogre: [Types.Entities.OGRE, "mob"],
     spectre: [Types.Entities.SPECTRE, "mob"],
@@ -124,7 +123,7 @@ var kinds = {
     bluesword: [Types.Entities.BLUESWORD, "weapon"],
     goldensword: [Types.Entities.GOLDENSWORD, "weapon"],
     morningstar: [Types.Entities.MORNINGSTAR, "weapon"],
-    
+
     firefox: [Types.Entities.FIREFOX, "armor"],
     clotharmor: [Types.Entities.CLOTHARMOR, "armor"],
     leatherarmor: [Types.Entities.LEATHERARMOR, "armor"],
@@ -155,10 +154,10 @@ var kinds = {
     forestnpc: [Types.Entities.FORESTNPC, "npc"],
     desertnpc: [Types.Entities.DESERTNPC, "npc"],
     lavanpc: [Types.Entities.LAVANPC, "npc"],
-    
-    getType: function(kind) {
+
+    getType: function (kind) {
         return kinds[Types.getKindAsString(kind)][1];
-    }
+    },
 };
 
 Types.rankedWeapons = [
@@ -168,7 +167,7 @@ Types.rankedWeapons = [
     Types.Entities.MORNINGSTAR,
     Types.Entities.BLUESWORD,
     Types.Entities.REDSWORD,
-    Types.Entities.GOLDENSWORD
+    Types.Entities.GOLDENSWORD,
 ];
 
 Types.rankedArmors = [
@@ -177,141 +176,152 @@ Types.rankedArmors = [
     Types.Entities.MAILARMOR,
     Types.Entities.PLATEARMOR,
     Types.Entities.REDARMOR,
-    Types.Entities.GOLDENARMOR
+    Types.Entities.GOLDENARMOR,
 ];
 
-Types.getWeaponRank = function(weaponKind) {
+Types.getWeaponRank = function (weaponKind) {
     return _.indexOf(Types.rankedWeapons, weaponKind);
 };
 
-Types.getArmorRank = function(armorKind) {
+Types.getArmorRank = function (armorKind) {
     return _.indexOf(Types.rankedArmors, armorKind);
 };
 
-Types.isPlayer = function(kind) {
+Types.isPlayer = function (kind) {
     return kinds.getType(kind) === "player";
 };
 
-Types.isMob = function(kind) {
+Types.isMob = function (kind) {
     return kinds.getType(kind) === "mob";
 };
 
-Types.isNpc = function(kind) {
+Types.isNpc = function (kind) {
     return kinds.getType(kind) === "npc";
 };
 
-Types.isCharacter = function(kind) {
+Types.isCharacter = function (kind) {
     return Types.isMob(kind) || Types.isNpc(kind) || Types.isPlayer(kind);
 };
 
-Types.isArmor = function(kind) {
+Types.isArmor = function (kind) {
     return kinds.getType(kind) === "armor";
 };
 
-Types.isWeapon = function(kind) {
+Types.isWeapon = function (kind) {
     return kinds.getType(kind) === "weapon";
 };
 
-Types.isObject = function(kind) {
+Types.isObject = function (kind) {
     return kinds.getType(kind) === "object";
 };
 
-Types.isChest = function(kind) {
+Types.isChest = function (kind) {
     return kind === Types.Entities.CHEST;
 };
 
-Types.isItem = function(kind) {
-    return Types.isWeapon(kind) 
-        || Types.isArmor(kind) 
-        || (Types.isObject(kind) && !Types.isChest(kind));
+Types.isItem = function (kind) {
+    return (
+        Types.isWeapon(kind) ||
+        Types.isArmor(kind) ||
+        (Types.isObject(kind) && !Types.isChest(kind))
+    );
 };
 
-Types.isHealingItem = function(kind) {
-    return kind === Types.Entities.FLASK 
-        || kind === Types.Entities.BURGER;
+Types.isHealingItem = function (kind) {
+    return kind === Types.Entities.FLASK || kind === Types.Entities.BURGER;
 };
 
-Types.isExpendableItem = function(kind) {
-    return Types.isHealingItem(kind)
-        || kind === Types.Entities.FIREPOTION
-        || kind === Types.Entities.CAKE;
+Types.isExpendableItem = function (kind) {
+    return (
+        Types.isHealingItem(kind) ||
+        kind === Types.Entities.FIREPOTION ||
+        kind === Types.Entities.CAKE
+    );
 };
 
-Types.getKindFromString = function(kind) {
-    if(kind in kinds) {
+Types.getKindFromString = function (kind) {
+    if (kind in kinds) {
         return kinds[kind][0];
     }
 };
 
-Types.getKindAsString = function(kind) {
-    for(var k in kinds) {
-        if(kinds[k][0] === kind) {
+Types.getKindAsString = function (kind) {
+    for (var k in kinds) {
+        if (kinds[k][0] === kind) {
             return k;
         }
     }
 };
 
-Types.forEachKind = function(callback) {
-    for(var k in kinds) {
+Types.forEachKind = function (callback) {
+    for (var k in kinds) {
         callback(kinds[k][0], k);
     }
 };
 
-Types.forEachArmor = function(callback) {
-    Types.forEachKind(function(kind, kindName) {
-        if(Types.isArmor(kind)) {
+Types.forEachArmor = function (callback) {
+    Types.forEachKind(function (kind, kindName) {
+        if (Types.isArmor(kind)) {
             callback(kind, kindName);
         }
     });
 };
 
-Types.forEachMobOrNpcKind = function(callback) {
-    Types.forEachKind(function(kind, kindName) {
-        if(Types.isMob(kind) || Types.isNpc(kind)) {
+Types.forEachMobOrNpcKind = function (callback) {
+    Types.forEachKind(function (kind, kindName) {
+        if (Types.isMob(kind) || Types.isNpc(kind)) {
             callback(kind, kindName);
         }
     });
 };
 
-Types.forEachArmorKind = function(callback) {
-    Types.forEachKind(function(kind, kindName) {
-        if(Types.isArmor(kind)) {
+Types.forEachArmorKind = function (callback) {
+    Types.forEachKind(function (kind, kindName) {
+        if (Types.isArmor(kind)) {
             callback(kind, kindName);
         }
     });
 };
 
-Types.getOrientationAsString = function(orientation) {
-    switch(orientation) {
-        case Types.Orientations.LEFT: return "left"; break;
-        case Types.Orientations.RIGHT: return "right"; break;
-        case Types.Orientations.UP: return "up"; break;
-        case Types.Orientations.DOWN: return "down"; break;
+Types.getOrientationAsString = function (orientation) {
+    switch (orientation) {
+        case Types.Orientations.LEFT:
+            return "left";
+            break;
+        case Types.Orientations.RIGHT:
+            return "right";
+            break;
+        case Types.Orientations.UP:
+            return "up";
+            break;
+        case Types.Orientations.DOWN:
+            return "down";
+            break;
     }
 };
 
-Types.getRandomItemKind = function(item) {
+Types.getRandomItemKind = function (item) {
     var all = _.union(this.rankedWeapons, this.rankedArmors),
         forbidden = [Types.Entities.SWORD1, Types.Entities.CLOTHARMOR],
         itemKinds = _.difference(all, forbidden),
         i = Math.floor(Math.random() * _.size(itemKinds));
-    
+
     return itemKinds[i];
 };
 
-Types.getMessageTypeAsString = function(type) {
+Types.getMessageTypeAsString = function (type) {
     var typeName;
-    _.each(Types.Messages, function(value, name) {
-        if(value === type) {
+    _.each(Types.Messages, function (value, name) {
+        if (value === type) {
             typeName = name;
         }
     });
-    if(!typeName) {
+    if (!typeName) {
         typeName = "UNKNOWN";
     }
     return typeName;
 };
 
-if(!(typeof exports === 'undefined')) {
+if (!(typeof exports === "undefined")) {
     module.exports = Types;
 }
