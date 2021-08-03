@@ -19,24 +19,17 @@ Using the exporter
 
 This tool is to be used from the command line after the TMX file has been saved from the Tiled editor.
 
-Note: This tool was written with OSX in mind. If you are using a different OS (eg. Windows), additional/different steps might be required.
-
 **Prerequisites:**
 
-- You need python and nodejs installed.
-- Install pip: <https://pypi.org/project/pip/>
-- Install lxml: `pip install lxml` (preferably within a virtualenv)
-- Optional: Install Growl + growlnotify if you are on OSX.
+The dependencies listed in `package.json`.
 
 **Usage:**
 
-1. `cd tools/maps/`
-
-2. `./export.py client` or `./export.py server`
+`node tools/maps/export.js <MODE>`, where `<MODE>` is one of `client` or `server`.
 
 You must run both commands in order to export the client and server map files. There is no one-step export command for both map types yet.
 
-**Warning:** depending on the `.tmx` filesize, the exporting process can take up to several minutes.
+**Warning:** Depending on the `.tmx` file size, the exporting process can take up to several minutes.
 
 
 Things to know
@@ -69,7 +62,7 @@ Contributing / Ideas for improvement
 
 Here are a few ideas for anyone who might want to help make this tool better:
 
-- Remove hard-coded filenames from export.py (eg. `map.tmx`, `world_client.json`) in order to allow easier switching to different map files.
+- Remove hard-coded filenames from export.js (eg. `map.tmx`, `world_client.json`) in order to allow easier switching to different map files.
 
 - Fix known bugs (see section above)
 
@@ -79,13 +72,13 @@ Here are a few ideas for anyone who might want to help make this tool better:
 
 - Write documentation about the BrowserQuest map JSON format, both for client and server map types.
 
-- Get rid of the `tmx2json.py` step which can currently take up to several minutes. Note: There is a JSON exporter built in Tiled since version 0.8.0 which could be useful. We didn't use it because our tool was written before the 0.8.0 release.
+- Get rid of the `tmx2json.js` step which can currently take up to several minutes. Note: There is a JSON exporter built in Tiled since version 0.8.0 which could be useful. We didn't use it because our tool was written before the 0.8.0 release.
 
 - A complete rewrite of this tool using a custom Tiled plugin would surely be a better approach than the current one. Being able to export directly from Tiled would be much easier to use. Also, the export process is currently too slow.
 
 
 **Additional resources:**
 
-- Tiled editor wiki: https://github.com/bjorn/tiled/wiki
-- TMX map format documentation: https://github.com/bjorn/tiled/wiki/TMX-Map-Format
+- Tiled editor wiki: <https://github.com/bjorn/tiled/wiki>
+- TMX map format documentation: <https://github.com/bjorn/tiled/wiki/TMX-Map-Format>
 
