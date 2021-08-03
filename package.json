@@ -1,6 +1,7 @@
 {
     "name": "LeetQuest",
     "version": "0.0.2",
+    "type": "module",
     "dependencies": {
         "bison": "^1.1.1",
         "express": "^4.16.3",
@@ -13,9 +14,21 @@
         "websocket": "^1.0.4",
         "websocket-server": "ThisIsMissEm/node-websocket-server#v1.4.04"
     },
+    "devDependencies": {
+        "@trivago/prettier-plugin-sort-imports": "^2.0.2",
+        "eslint": "^7.32.0",
+        "eslint-plugin-import": "^2.23.4",
+        "eslint-plugin-node": "^11.1.0",
+        "prettier": "^2.3.2"
+    },
     "scripts": {
         "build-maps": "node tools/maps/export.js",
         "build": "node bin/build.js",
-        "start": "node bin/run.js"
+        "start": "node bin/run.js",
+        "format": "prettier --write .",
+        "lint": "eslint . --ext .js,.ts"
+    },
+    "engines": {
+        "node": ">=10.0.0"
     }
 }

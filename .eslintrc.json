@@ -1,0 +1,16 @@
+{
+    "extends": ["eslint:recommended", "plugin:import/recommended"],
+    "env": {
+        "es2020": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module"
+    },
+    "rules": {
+        "no-unused-vars": [
+            "warn",
+            { "vars": "all", "args": "all", "argsIgnorePattern": "^_" }
+        ]
+    }
+}
