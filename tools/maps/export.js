@@ -7,21 +7,49 @@ var child_process = require('child_process');
 var SRC_FILE = 'tmx/map.tmx';
 var TEMP_FILE = 'tmx/map.tmx.json';
 
-function runCommand(cmdline) {
-    var result = child_process.spawnSync(cmdline[0], cmdline.slice(1),
+function runCommand(cmdline, cb) {
+    var proc = child_process.spawn(cmdline[0], cmdline.slice(1),
         {cwd: __dirname, stdio: 'inherit'});
-    if (result.status !== 0) process.exit(1);
+    proc.on('close', function(code, signal) {
+        if (code !== 0) {
+            console.error('Child process ' + ((signal) ?
+                'got signal ' + signal : 'exited with code ' + code));
+            process.exit(1);
+        }
+        cb();
+    });
 }
 
-var mode = process.argv[2] || 'client';
+var mode = process.argv[2] || 'both';
+var doClient = (mode === 'client' || mode === 'both');
+var doServer = (mode === 'server' || mode === 'both');
+
 var DEST_FILE = (mode === 'client') ?
     '../../client/maps/world_client' :
     '../../server/maps/world_server.json';
 
-runCommand(['node', 'tmx2json.js', SRC_FILE, TEMP_FILE]);
+console.log('Translating map file to JSON...');
+runCommand(['node', 'tmx2json.js', SRC_FILE, TEMP_FILE], function() {
+    function onDone() {
+        if (--pending !== 0) return;
+        console.log('Removing temporary file...');
+        fs.unlink(path.join(__dirname, TEMP_FILE), function(err) {
+            if (err) throw err;
+            console.log('Done.');
+        });
+    }
 
-runCommand(['node', 'exportmap.js', TEMP_FILE, DEST_FILE, mode]);
-
-fs.unlinkSync(TEMP_FILE);
-
-console.log('Done.');
+    var pending = 0;
+    if (doClient) {
+        pending++;
+        console.log('Compiling client map...');
+        runCommand(['node', 'exportmap.js', TEMP_FILE,
+                    '../../client/maps/world_client', 'client'], onDone);
+    }
+    if (doServer) {
+        pending++;
+        console.log('Compiling server map...');
+        runCommand(['node', 'exportmap.js', TEMP_FILE,
+                   '../server/maps/world_server.json', 'server'], onDone);
+    }
+});

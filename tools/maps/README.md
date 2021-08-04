@@ -1,7 +1,7 @@
 BrowserQuest map exporter
 =========================
 
-***Disclaimer: due to popular demand we are open sourcing this tool, but please be aware that it was never meant to be publicly released. Therefore the code is messy/non-optimized and the exporting process can be very slow with large map files.***
+***Disclaimer: Due to popular demand we are open sourcing this tool, but please be aware that it was never meant to be publicly released. Therefore the code is messy/non-optimized and the exporting process can be very slow with large map files.***
 
 
 Editing the map
@@ -11,7 +11,7 @@ Install the [Tiled](https://www.mapeditor.org/) editor.
 
 Open the `tmx/map.tmx` file in Tiled and start editing.
 
-**Note:** there currently is no documentation on how to edit BrowserQuest-specific objects/layers in Tiled. Please refer to `tmx/map.tmx` as an example if you want to create your own map.
+**Note:** There currently is no documentation on how to edit BrowserQuest-specific objects/layers in Tiled. Please refer to `tmx/map.tmx` as an example if you want to create your own map.
 
 
 Using the exporter
@@ -25,9 +25,7 @@ The dependencies listed in `package.json`.
 
 **Usage:**
 
-`node tools/maps/export.js <MODE>`, where `<MODE>` is one of `client` or `server`.
-
-You must run both commands in order to export the client and server map files. There is no one-step export command for both map types yet.
+`node tools/maps/export.js <MODE>`, where `<MODE>` is one of `client` or `server` or `both` (the latter being the default).
 
 **Warning:** Depending on the `.tmx` file size, the exporting process can take up to several minutes.
 
@@ -45,17 +43,17 @@ Depending on what you want to change, it's therefore not always needed to export
 
 **How the exporting process works:**
 
-1. The Tiled map TMX file is converted to a temporary JSON file by `tmx2json.py`.
-2. This file is be processed by `processmap.js` and returned as an object. This object will have different properties depending on whether we are exporting the client or the server map.
+1. The Tiled map TMX file is converted to a temporary JSON file by `tmx2json.js`.
+2. This file is processed by `processmap.js` and returned as an object. This object will have different properties depending on whether we are exporting the client or the server map.
 3. The processed map object is saved as the final world map JSON file(s) in the appropriate directories.
 4. The temporary file from step 1. is deleted.
 
 
 **Known bugs:**
- 
-    * There currently needs to be an empty layer at the bottom of the Tiled layer stack or else the first terrain layer will be missing.
-      (ie. if you remove the "don't remove this layer" layer from the `map.tmx` file, the 'sand' tiles will be missing on the beach.)
-    
+
+- There currently needs to be an empty layer at the bottom of the Tiled layer stack or else the first terrain layer will be missing.
+  (ie. if you remove the "don't remove this layer" layer from the `map.tmx` file, the 'sand' tiles will be missing on the beach.)
+
 
 Contributing / Ideas for improvement
 ------------------------------------
@@ -64,9 +62,7 @@ Here are a few ideas for anyone who might want to help make this tool better:
 
 - Remove hard-coded filenames from export.js (eg. `map.tmx`, `world_client.json`) in order to allow easier switching to different map files.
 
-- Fix known bugs (see section above)
-
-- Write documentation on how to use the exporter on Windows.
+- Fix known bugs. (see section above)
 
 - Write documentation about map editing in the Tiled editor (ie. editing BrowserQuest-specific properties of doors, chests, spawning areas, etc.)
 
@@ -81,4 +77,3 @@ Here are a few ideas for anyone who might want to help make this tool better:
 
 - Tiled editor wiki: <https://github.com/bjorn/tiled/wiki>
 - TMX map format documentation: <https://github.com/bjorn/tiled/wiki/TMX-Map-Format>
-
