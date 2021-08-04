@@ -1,6 +1,5 @@
 import fs from "fs";
 import forEach from "lodash-es/forEach.js";
-import includes from "lodash-es/includes.js";
 import reject from "lodash-es/reject.js";
 import size from "lodash-es/size.js";
 import some from "lodash-es/some.js";
@@ -85,19 +84,37 @@ export default class Map {
     }
 
     generateCollisionGrid() {
-        this.grid = [];
+        this.grid = new Array(this.height);
+
+        // TODO: probably better to move this into the map JSON generation script
+        // sort collisions so we can just iterate over them as we iterate over all tiles
+        this.collisions.sort((a, b) => a - b);
 
         if (this.isLoaded) {
             let tileIndex = 0;
-            for (let i = 0; i < this.height; i++) {
-                this.grid[i] = [];
-                for (let j = 0; j < this.width; j++) {
-                    if (includes(this.collisions, tileIndex)) {
-                        this.grid[i][j] = 1;
+            let currentCollision = 0;
+
+            // set each grid tile marked as a collision to 1, all others to 0
+            for (let y = 0; y < this.height; y++) {
+                this.grid[y] = new Array(this.width);
+
+                for (let x = 0; x < this.width; x++) {
+                    if (
+                        currentCollision < this.collisions.length &&
+                        this.collisions[currentCollision] === tileIndex
+                    ) {
+                        this.grid[y][x] = 1;
+                        // TODO: collisions are not unique... *argh* (fix in map JSON generation script)
+                        while (
+                            this.collisions[currentCollision] === tileIndex
+                        ) {
+                            currentCollision++;
+                        }
                     } else {
-                        this.grid[i][j] = 0;
+                        this.grid[y][x] = 0;
                     }
-                    tileIndex += 1;
+
+                    tileIndex++;
                 }
             }
             //log.info("Collision grid generated.");
