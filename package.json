@@ -14,6 +14,7 @@
         "websocket-server": "ThisIsMissEm/node-websocket-server#v1.4.04"
     },
     "scripts": {
+        "export-maps": "node tools/maps/export.js",
         "build": "node bin/build.js",
         "start": "node bin/run.js"
     }

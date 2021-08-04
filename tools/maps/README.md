@@ -22,9 +22,11 @@ Using the exporter
 This tool is to be used from the command line after the TMX file has been
 saved from the Tiled editor.
 
-- Install the dependencies listed in `package.json`.
-- Run `node tools/maps/export.js <MODE>`, where `<MODE>` is one of `client` or
-  `server` or `both` (the latter being the default).
+- From the package root, run `npm run export-maps`.
+
+If you want to export only the client/server parts of the map, you can
+directly invoke `node export.js client` or `node export.js server` (in this
+directory).
 
 **Warning:** Depending on the `.tmx` file size, the exporting process can take
 up to several minutes.
