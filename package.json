@@ -2,17 +2,19 @@
     "name": "LeetQuest",
     "version": "0.0.2",
     "dependencies": {
-        "underscore": "^1.9.1",
-        "log": "^1.4.0",
         "bison": "^1.1.1",
-        "websocket": "^1.0.4",
-        "websocket-server": "ThisIsMissEm/node-websocket-server#v1.4.04",
-        "sanitizer": "^0.0.15",
-        "memcache": "^0.3.0",
         "express": "^4.16.3",
-        "minimist": "^1.2.0"
+        "log": "^1.4.0",
+        "memcache": "^0.3.0",
+        "minimist": "^1.2.0",
+        "sanitizer": "^0.0.15",
+        "sax": "^1.2.4",
+        "underscore": "^1.9.1",
+        "websocket": "^1.0.4",
+        "websocket-server": "ThisIsMissEm/node-websocket-server#v1.4.04"
     },
     "scripts": {
+        "export-maps": "node tools/maps/export.js",
         "build": "node bin/build.js",
         "start": "node bin/run.js"
     }
