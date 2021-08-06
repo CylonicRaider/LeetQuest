@@ -10,6 +10,9 @@ Documentation
 
 **Building**: To build the client, run `npm run build`.
 
+**Building game maps**: This (particularly expensive) step needs to run
+separately via `npm run build-maps`.
+
 **Running**: To run the game server, run `npm start`. Options may be supplied
 after a `--`; in particular, run `npm start -- --help` to see a list of
 supported options.
