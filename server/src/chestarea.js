@@ -20,4 +20,14 @@ export default class ChestArea extends Area {
             return false;
         }
     }
+
+    respawnMob(mob, delay) {
+        super.respawnMob(mob, delay);
+
+        setTimeout(() => {
+            if (mob.respawn_callback) {
+                mob.respawn_callback();
+            }
+        }, delay);
+    }
 }

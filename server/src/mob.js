@@ -5,9 +5,7 @@ import some from "lodash-es/some.js";
 import sortBy from "lodash-es/sortBy.js";
 
 import Character from "./character.js";
-import ChestArea from "./chestarea.js";
 import * as Messages from "./message.js";
-import MobArea from "./mobarea.js";
 import Properties from "./properties.js";
 import * as Utils from "./utils.js";
 
@@ -104,19 +102,8 @@ export default class Mob extends Character {
     handleRespawn() {
         const delay = 30000;
 
-        if (this.area && this.area instanceof MobArea) {
-            // Respawn inside the area if part of a MobArea
+        if (this.area) {
             this.area.respawnMob(this, delay);
-        } else {
-            if (this.area && this.area instanceof ChestArea) {
-                this.area.removeFromArea(this);
-            }
-
-            setTimeout(() => {
-                if (this.respawn_callback) {
-                    this.respawn_callback();
-                }
-            }, delay);
         }
     }
 

@@ -3,8 +3,7 @@ import indexOf from "lodash-es/indexOf.js";
 import map from "lodash-es/map.js";
 import size from "lodash-es/size.js";
 
-// FIXME: cyclic dependency of Mob and Area
-// import Mob from "./mob.js";
+import Mob from "./mob.js";
 import * as Utils from "./utils.js";
 
 export default class Area {
@@ -49,10 +48,9 @@ export default class Area {
         if (entity) {
             this.entities.push(entity);
             entity.area = this;
-            // FIXME: cyclic dependency of Mob and Area
-            // if (entity instanceof Mob) {
-            //     this.world.addMob(entity);
-            // }
+            if (entity instanceof Mob) {
+                this.world.addMob(entity);
+            }
         }
 
         if (this.isFull()) {
@@ -74,5 +72,9 @@ export default class Area {
 
     onEmpty(callback) {
         this.empty_callback = callback;
+    }
+
+    respawnMob(mob, _delay) {
+        this.removeFromArea(mob);
     }
 }
