@@ -3,16 +3,16 @@
 A Web MMORPG forked off
 [BrowserQuest](https://github.com/mozilla/BrowserQuest).
 
-## Documentation
+## Usage
 
-**Building**: To build the client, run `npm run build`.
+**Building**: To build the client, run `npm run prestart` (this is also done
+automatically when starting the server).
 
 **Building game maps**: This (particularly expensive) step needs to run
-separately via `npm run build-maps`.
+separately via `npm run build-maps`. It is only necessary when the `map.tmx`
+file has been edited — the built map files are version-controlled.
 
-**Running**: To run the game server, run `npm start`. Options may be supplied
-after a `--`; in particular, run `npm start -- --help` to see a list of
-supported options.
+**Running**: To run the game server, run `npm start`.
 
 As default, the client is configured to connect to the server it is loaded
 from; the server, in turn, listens on port `8000` by default, and serves the
