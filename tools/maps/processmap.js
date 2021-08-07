@@ -234,6 +234,11 @@ export default function processMap(unprocessedMap, options) {
         }
     }
 
+    // make colliding tiles unique (only one entry per tile id is needed / desirable)
+    worldMap.collisions = [...new Set(worldMap.collisions)];
+    // sort as numbers, *not* lexicographically
+    worldMap.collisions.sort((a, b) => a - b);
+
     return worldMap;
 }
 

@@ -86,10 +86,6 @@ export default class Map {
     generateCollisionGrid() {
         this.grid = new Array(this.height);
 
-        // TODO: probably better to move this into the map JSON generation script
-        // sort collisions so we can just iterate over them as we iterate over all tiles
-        this.collisions.sort((a, b) => a - b);
-
         if (this.isLoaded) {
             let tileIndex = 0;
             let currentCollision = 0;
@@ -104,12 +100,7 @@ export default class Map {
                         this.collisions[currentCollision] === tileIndex
                     ) {
                         this.grid[y][x] = 1;
-                        // TODO: collisions are not unique... *argh* (fix in map JSON generation script)
-                        while (
-                            this.collisions[currentCollision] === tileIndex
-                        ) {
-                            currentCollision++;
-                        }
+                        currentCollision++;
                     } else {
                         this.grid[y][x] = 0;
                     }
