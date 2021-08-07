@@ -5,14 +5,15 @@ A Web MMORPG forked off
 
 ## Usage
 
-**Building**: To build the client, run `npm run prestart` (this is also done
-automatically when starting the server).
+**Building the client**: To build the client, run `npm run build-client`.
 
 **Building game maps**: This (particularly expensive) step needs to run
 separately via `npm run build-maps`. It is only necessary when the `map.tmx`
 file has been edited — the built map files are version-controlled.
 
-**Running**: To run the game server, run `npm start`.
+**Running the server**: To run the game server, run `npm start`
+                        (remember to re-build the client code for production,
+                        if it has changed).
 
 As default, the client is configured to connect to the server it is loaded
 from; the server, in turn, listens on port `8000` by default, and serves the
