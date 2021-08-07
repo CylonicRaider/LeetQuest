@@ -11,6 +11,9 @@
         "no-unused-vars": [
             "warn",
             { "vars": "all", "args": "all", "argsIgnorePattern": "^_" }
-        ]
+        ],
+        "import/no-commonjs": "error",
+        "import/no-cycle": "error",
+        "import/no-self-import": "error"
     }
 }
