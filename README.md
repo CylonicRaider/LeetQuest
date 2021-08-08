@@ -5,15 +5,14 @@ A Web MMORPG forked off
 
 ## Usage
 
-**Building the client**: To build the client, run `npm run build-client`.
+**Building the client**: To build the client, run `npm run build`.
 
 **Building game maps**: This (particularly expensive) step needs to run
 separately via `npm run build-maps`. It is only necessary when the `map.tmx`
 file has been edited — the built map files are version-controlled.
 
-**Running the server**: To run the game server, run `npm start`
-                        (remember to re-build the client code for production,
-                        if it has changed).
+**Running the server**: To run the game server, run `npm start` (remember to
+build the client if necessary).
 
 As default, the client is configured to connect to the server it is loaded
 from; the server, in turn, listens on port `8000` by default, and serves the
