@@ -69,7 +69,7 @@ export default class GameClient {
             }
         }
 
-        log.info(`Trying to connect to server : ${url}`);
+        log.info(`Trying to connect to server: ${url}`);
 
         if (window.MozWebSocket) {
             this.connection = new window.MozWebSocket(url);
@@ -93,7 +93,7 @@ export default class GameClient {
             };
         } else {
             this.connection.onopen = (_event) => {
-                log.info(`Connected to server ${this.host}:${this.port}`);
+                log.info(`Connected to server ${url}`);
             };
 
             this.connection.onmessage = (event) => {
