@@ -89,39 +89,11 @@ export default class App {
         var firstTimePlaying = !this.storage.hasAlreadyPlayed();
 
         if (username && !this.game.started) {
-            var optionsSet = false,
-                config = this.config;
-
-            // FIXME:
-            //>>includeStart("devHost", pragmas.devHost);
-            if (config.local) {
-                log.debug("Starting game with local dev config.");
-                this.game.setServerOptions(
-                    config.local.host,
-                    config.local.port,
-                    username,
-                );
-            } else {
-                log.debug("Starting game with default dev config.");
-                this.game.setServerOptions(
-                    config.dev.host,
-                    config.dev.port,
-                    username,
-                );
-            }
-            optionsSet = true;
-            //>>includeEnd("devHost");
-
-            //>>includeStart("prodHost", pragmas.prodHost);
-            if (!optionsSet) {
-                log.debug("Starting game with build config.");
-                this.game.setServerOptions(
-                    config.build.host,
-                    config.build.port,
-                    username,
-                );
-            }
-            //>>includeEnd("prodHost");
+            this.game.setServerOptions(
+                this.config.host,
+                this.config.port,
+                username,
+            );
 
             this.center();
             this.game.run(() => {

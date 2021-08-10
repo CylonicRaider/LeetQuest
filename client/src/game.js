@@ -807,24 +807,12 @@ export default class Game {
     }
 
     connect(started_callback) {
-        var connecting = false; // always in dispatcher mode in the build version
-
         this.client = new GameClient(this.host, this.port);
 
-        // FIXME:
-        //>>excludeStart("prodHost", pragmas.prodHost);
-        var config = this.app.config.local || this.app.config.dev;
-        if (config) {
-            this.client.connect(config.dispatcher); // false if the client connects directly to a game server
-            connecting = true;
-        }
-        //>>excludeEnd("prodHost");
-
-        //>>includeStart("prodHost", pragmas.prodHost);
-        if (!connecting) {
-            this.client.connect(true); // always use the dispatcher in production
-        }
-        //>>includeEnd("prodHost");
+        // a dispatcher allows load-balancing clients to different servers;
+        // since the game server (now) includes a trivial embedded dispatcher,
+        // there is little use to set this to anything other than true
+        this.client.connect(this.app.config.dispatcher);
 
         this.client.onDispatched((host, port) => {
             log.debug(`Dispatched to game server ${host}:${port}`);

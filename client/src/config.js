@@ -1,22 +1,11 @@
-// FIXME FIXME FIXME: configuration in general should be reworked into something non-painful
+// optional TODO: allow setting this from the outside in a non-painful manner
 
-// import build from "../config/config_build.json";
-// import local from "../config/config_local.json";
-
-// optional TODO: webpack for string inclusion of files (might not be necessary after this is refactored)
-
-let config = {
-    dev: { host: null, port: null, dispatcher: false },
-    build: { host: null, port: null },
+export default {
+    // if host and port are null, the client fills them in from its own
+    // location -- which is what we usually want
+    host: null,
+    port: null,
+    // allow load-balancing clients to different game servers -- does little
+    // harm
+    dispatcher: true,
 };
-
-// FIXME:
-// if (process.env.NODE_ENV !== "production") {
-//     try {
-//         config.local = local;
-//     } catch (e) {
-//         // Exception triggered when config_local.json does not exist. Nothing to do here.
-//     }
-// }
-
-export default config;
