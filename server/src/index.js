@@ -4,6 +4,7 @@ import forEach from "lodash-es/forEach.js";
 import map from "lodash-es/map.js";
 import range from "lodash-es/range.js";
 import sumBy from "lodash-es/sumBy.js";
+import merge from "merge";
 
 import log from "./log.js";
 import Player from "./player.js";
@@ -95,17 +96,13 @@ process.argv.forEach((val, index, array) => {
 
 getConfigFile(defaultConfigPath, (defaultConfig) => {
     getConfigFile(customConfigPath, (localConfig) => {
-        if (localConfig) {
-            main(localConfig);
-        } else if (defaultConfig) {
-            main(defaultConfig);
-        } else {
-            const erroStr =
-                "Server cannot start without any configuration file.";
-
-            log.error(erroStr);
-
-            throw erroStr;
+        if (!defaultConfig && !localConfig) {
+            const errorStr =
+                "Server cannot start without any configuration file";
+            log.error(errorStr);
+            throw errorStr;
         }
+        const finalConfig = merge(defaultConfig, localConfig);
+        main(finalConfig);
     });
 });
