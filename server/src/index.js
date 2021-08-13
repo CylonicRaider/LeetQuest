@@ -85,8 +85,8 @@ function getConfigFile(path, callback) {
     });
 }
 
-const defaultConfigPath = "./server/config.json";
-let customConfigPath = "./server/config_local.json";
+const defaultConfigPath = "config.default.json";
+let customConfigPath = "config.json";
 
 process.argv.forEach((val, index, array) => {
     if (index === 2) {
@@ -102,7 +102,15 @@ getConfigFile(defaultConfigPath, (defaultConfig) => {
             log.error(errorStr);
             throw errorStr;
         }
-        const finalConfig = merge(defaultConfig, localConfig);
-        main(finalConfig);
+        const mergedConfig = merge(defaultConfig, localConfig);
+        const translatedConfig = {
+            host: mergedConfig.host,
+            port: mergedConfig.port,
+            nb_worlds: mergedConfig.world_count,
+            nb_players_per_world: mergedConfig.world_capacity,
+            map_filepath: mergedConfig.map,
+            debug_level: mergedConfig.log_level,
+        };
+        main(translatedConfig);
     });
 });
