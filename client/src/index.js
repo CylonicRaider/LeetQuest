@@ -484,4 +484,4 @@ function initGame() {
     }
 }
 
-initApp();
+$(initApp);
