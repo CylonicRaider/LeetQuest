@@ -8,18 +8,17 @@ A Web MMORPG forked off
 **Building the client**: To build the client, run `npm run build`.
 
 **Building game maps**: This (particularly expensive) step needs to run
-separately via `npm run build-maps`. It is only necessary when the `map.tmx`
-file has been edited — the built map files are version-controlled.
+separately via `npm run build-maps`. It is only necessary when the
+`tools/maps/tmx/map.tmx` file has been edited — the built map files are
+version-controlled.
 
 **Running the server**: To run the game server, run `npm start` (remember to
-build the client if necessary).
+build the client if necessary). The server takes a single optional
+command-line parameter, viz. the name of a configuration file, which defaults
+to `config.json`. The configuration file overrides the defaults supplied in
+`config.default.json`.
 
-As default, the client is configured to connect to the server it is loaded
-from; the server, in turn, listens on port `8000` by default, and serves the
-client (if the latter is built).
-
-More detailed documentation is located in the `client` and `server`
-directories.
+Additional documentation is located in the `client` and `server` directories.
 
 ## License
 
