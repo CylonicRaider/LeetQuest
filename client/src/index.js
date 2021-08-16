@@ -198,9 +198,7 @@ function initApp() {
 
     document.addEventListener("touchstart", () => {}, false);
 
-    $("#resize-check").on("transitionend", app.resizeUi.bind(app));
-    $("#resize-check").on("webkitTransitionEnd", app.resizeUi.bind(app));
-    $("#resize-check").on("oTransitionEnd", app.resizeUi.bind(app));
+    $("#resize-check").on(TRANSITIONEND, app.resizeUi.bind(app));
 
     log.info("App initialized.");
 
