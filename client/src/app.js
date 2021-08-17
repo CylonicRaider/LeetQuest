@@ -223,7 +223,7 @@ export default class App {
     initEquipmentIcons() {
         var scale = this.game.renderer.getScaleFactor();
         var getIconPath = (spriteName) =>
-                `img/${scale}/item-${spriteName}.png"`,
+                `img/${scale}/item-${spriteName}.png`,
             weapon = this.game.player.getWeaponName(),
             armor = this.game.player.getSpriteName(),
             weaponPath = getIconPath(weapon),
