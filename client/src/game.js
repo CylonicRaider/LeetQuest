@@ -815,8 +815,6 @@ export default class Game {
         this.client.connect(this.app.config.dispatcher);
 
         this.client.onDispatched((host, port) => {
-            log.debug(`Dispatched to game server ${host}:${port}`);
-
             this.client.host = host;
             this.client.port = port;
             this.client.connect(); // connect to actual game server

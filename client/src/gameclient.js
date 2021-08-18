@@ -69,7 +69,8 @@ export default class GameClient {
             }
         }
 
-        log.info(`Trying to connect to server: ${url}`);
+        const serverRole = dispatcherMode ? "dispatcher" : "game";
+        log.info(`Trying to connect to ${serverRole} server: ${url}`);
 
         if (window.MozWebSocket) {
             this.connection = new window.MozWebSocket(url);
