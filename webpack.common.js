@@ -14,6 +14,19 @@ export default {
             patterns: [{ from: "./client/assets" }],
         }),
     ],
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        presets: ["@babel/preset-env"],
+                    },
+                },
+            },
+        ],
+    },
     output: {
         filename: "[name].bundle.js",
         path: path.resolve(__dirname, "dist/client"),
