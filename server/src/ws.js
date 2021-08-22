@@ -7,7 +7,7 @@ import { createServer } from "websocket-server";
 import miksagoConnection from "websocket-server/lib/ws/connection.js";
 
 import log from "./log.js";
-import Static from "./static.js";
+import buildStaticApp from "./static.js";
 import * as Utils from "./utils.js";
 
 const { request: worlizeRequest } = websocket;
@@ -118,6 +118,7 @@ export class MultiVersionWebsocketServer extends Server {
         this._connections = {};
         this._counter = 0;
 
+        this._statics = buildStaticApp();
         this._httpServer = _createServer((request, response) => {
             const path = new URL(request.url, `http://${request.headers.host}`)
                 .pathname;
@@ -130,7 +131,7 @@ export class MultiVersionWebsocketServer extends Server {
                     }
                 // falls through
                 default:
-                    Static(request, response);
+                    this._statics(request, response);
                     return;
             }
             response.end();

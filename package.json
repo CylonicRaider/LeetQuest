@@ -39,7 +39,7 @@
         "lint": "eslint . --ext .js,.ts",
         "build": "NODE_ENV=production webpack --progress --config webpack.prod.js",
         "start": "NODE_ENV=production node ./server/src/index.js",
-        "start-dev": "NODE_ENV=development node ./server/src/index.js | pino-pretty -ct"
+        "start-dev": "NODE_ENV=development node ./server/src/index.dev.js | pino-pretty -ct"
     },
     "engines": {
         "node": ">=10.0.0"
