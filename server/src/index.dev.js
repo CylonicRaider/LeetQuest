@@ -1,5 +1,6 @@
 // WARNING: This file is not covered by automated formatting because of the
 //          special import order.
+/* eslint-disable node/no-unpublished-import */
 import webpack from "webpack";
 import webpackDevMiddleware from "webpack-dev-middleware";
 
