@@ -2617,10 +2617,9 @@ export default class Game {
 
     resize() {
         var x = this.camera.x,
-            y = this.camera.y,
-            newScale = this.renderer.getScaleFactor();
+            y = this.camera.y;
 
-        this.renderer.rescale(newScale);
+        this.renderer.rescale();
         this.camera = this.renderer.camera;
         this.camera.setPosition(x, y);
 

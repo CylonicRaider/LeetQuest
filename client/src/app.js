@@ -513,8 +513,7 @@ export default class App {
                 this.initHealthBar();
                 this.game.updateBars();
             } else {
-                var newScale = this.game.renderer.getScaleFactor();
-                this.game.renderer.rescale(newScale);
+                this.game.renderer.rescale();
             }
         }
     }

@@ -37,7 +37,7 @@ export default class Renderer {
             this.context.imageSmoothingEnabled !== undefined;
         this.supportsSilhouettes = this.upscaledRendering;
 
-        this.rescale(this.getScaleFactor());
+        this.rescale();
 
         this.lastTime = new Date();
         this.frameCount = 0;
@@ -84,7 +84,7 @@ export default class Renderer {
         return scale;
     }
 
-    rescale(factor) {
+    rescale() {
         this.scale = this.getScaleFactor();
 
         this.createCamera();
