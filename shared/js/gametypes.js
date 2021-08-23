@@ -298,7 +298,7 @@ export function getOrientationAsString(orientation) {
     }
 }
 
-export function getRandomItemKind(item) {
+export function getRandomItemKind() {
     var all = union(this.rankedWeapons, this.rankedArmors),
         forbidden = [Entities.SWORD1, Entities.CLOTHARMOR],
         itemKinds = difference(all, forbidden),

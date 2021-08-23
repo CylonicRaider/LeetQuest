@@ -53,7 +53,7 @@ export default class MobArea extends Area {
         }, delay);
     }
 
-    initRoaming(mob) {
+    initRoaming() {
         setInterval(() => {
             forEach(this.entities, (mob) => {
                 const canRoam = Utils.random(20) === 1;

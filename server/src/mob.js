@@ -34,7 +34,7 @@ export default class Mob extends Character {
         this.handleRespawn();
     }
 
-    receiveDamage(points, playerId) {
+    receiveDamage(points, _playerId) {
         this.hitPoints -= points;
     }
 

@@ -26,6 +26,12 @@ export default class Map {
             }
 
             fs.readFile(filepath, (err, file) => {
+                if (err)
+                    log.error(
+                        { path: filepath },
+                        `Could not read map file ${filepath}`,
+                    );
+
                 const json = JSON.parse(file.toString());
 
                 this.initMap(json);

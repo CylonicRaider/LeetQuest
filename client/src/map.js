@@ -214,8 +214,6 @@ export default class WorldMap {
     }
 
     _generateCollisionGrid() {
-        var tileIndex = 0;
-
         this.grid = [];
         for (var j, i = 0; i < this.height; i++) {
             this.grid[i] = [];

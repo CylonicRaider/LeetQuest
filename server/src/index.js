@@ -88,7 +88,7 @@ function getConfigFile(path, callback) {
 const defaultConfigPath = "config.default.json";
 let customConfigPath = "config.json";
 
-process.argv.forEach((val, index, array) => {
+process.argv.forEach((val, index) => {
     if (index === 2) {
         customConfigPath = val;
     }

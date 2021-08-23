@@ -497,7 +497,6 @@ export default class World {
     handleMobHate(mobId, playerId, hatePoints) {
         const mob = this.getEntityById(mobId),
             player = this.getEntityById(playerId);
-        let mostHated;
 
         if (player && mob) {
             mob.increaseHateFor(playerId, hatePoints);
@@ -827,9 +826,8 @@ export default class World {
     processGroups() {
         if (this.zoneGroupsReady) {
             this.map.forEachGroup((id) => {
-                let spawns = [];
                 if (this.groups[id].incoming.length > 0) {
-                    spawns = forEach(this.groups[id].incoming, (entity) => {
+                    forEach(this.groups[id].incoming, (entity) => {
                         if (entity instanceof Player) {
                             this.pushToGroup(id, new Spawn(entity), entity.id);
                         } else {
@@ -865,7 +863,7 @@ export default class World {
         }
     }
 
-    handleEmptyMobArea(area) {}
+    handleEmptyMobArea(_area) {}
 
     handleEmptyChestArea(area) {
         if (area) {
@@ -876,7 +874,7 @@ export default class World {
         }
     }
 
-    handleOpenedChest(chest, player) {
+    handleOpenedChest(chest, _player) {
         this.pushToAdjacentGroups(chest.group, chest.despawn());
         this.removeEntity(chest);
 

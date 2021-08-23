@@ -120,7 +120,7 @@ export default class Character extends Entity {
         this.animate("walk", this.walkSpeed);
     }
 
-    moveTo_(x, y, callback) {
+    moveTo_(x, y) {
         this.destination = { gridX: x, gridY: y };
         this.adjacentTiles = {};
 

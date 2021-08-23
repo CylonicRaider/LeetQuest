@@ -87,7 +87,6 @@ export default class Updater {
         const game = this.game,
             camera = game.camera,
             zoning = game.currentZoning,
-            s = 3,
             ts = 16,
             speed = 500;
 

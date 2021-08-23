@@ -243,13 +243,13 @@ export default class Game {
     }
 
     initHurtSprites() {
-        Types.forEachArmorKind((kind, kindName) => {
+        Types.forEachArmorKind((_, kindName) => {
             this.sprites[kindName].createHurtSprite();
         });
     }
 
     initSilhouettes() {
-        Types.forEachMobOrNpcKind((kind, kindName) => {
+        Types.forEachMobOrNpcKind((_, kindName) => {
             this.sprites[kindName].createSilhouette();
         });
         this.sprites["chest"].createSilhouette();
@@ -388,7 +388,7 @@ export default class Game {
 
     getAchievementById(id) {
         var found = null;
-        forEach(this.achievements, (achievement, key) => {
+        forEach(this.achievements, (achievement) => {
             if (achievement.id === parseInt(id)) {
                 found = achievement;
             }
@@ -1302,7 +1302,7 @@ export default class Game {
                                         }
                                     });
 
-                                    entity.onStopPathing((x, y) => {
+                                    entity.onStopPathing(() => {
                                         if (!entity.isDying) {
                                             if (
                                                 entity.hasTarget() &&
@@ -2095,8 +2095,7 @@ export default class Game {
      */
     findPath(character, x, y, ignoreList) {
         var grid = this.pathingGrid,
-            path = [],
-            isPlayer = character === this.player;
+            path = [];
 
         if (this.map.isColliding(x, y)) {
             return path;
@@ -2619,7 +2618,6 @@ export default class Game {
     resize() {
         var x = this.camera.x,
             y = this.camera.y,
-            currentScale = this.renderer.scale,
             newScale = this.renderer.getScaleFactor();
 
         this.renderer.rescale(newScale);

@@ -351,8 +351,6 @@ function initGame() {
     });
 
     $(document).on("keydown", (event) => {
-        var $chat = $("#chatinput");
-
         if (event.key === "Enter") {
             if ($("#chatbox").hasClass("active")) {
                 app.hideChat();

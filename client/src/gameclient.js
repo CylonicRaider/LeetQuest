@@ -148,7 +148,7 @@ export default class GameClient {
     }
 
     receiveMessage(message) {
-        var data, action;
+        var data;
 
         if (this.isListening) {
             if (this.useBison) {

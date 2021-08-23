@@ -3,7 +3,7 @@ import { Entities } from "../../shared/js/gametypes.js";
 import Entity from "./entity.js";
 
 export default class Chest extends Entity {
-    constructor(id, kind) {
+    constructor(id) {
         super(id, Entities.CHEST);
     }
 

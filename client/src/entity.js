@@ -93,8 +93,7 @@ export default class Entity {
                 return;
             }
 
-            var s = this.sprite,
-                a = this.getAnimationByName(name);
+            var a = this.getAnimationByName(name);
 
             if (a) {
                 this.currentAnimation = a;
@@ -171,7 +170,6 @@ export default class Entity {
     isCloseTo(entity) {
         var dx,
             dy,
-            d,
             close = false;
         if (entity) {
             dx = Math.abs(entity.gridX - this.gridX);
@@ -229,7 +227,7 @@ export default class Entity {
         this.startFadingTime = currentTime;
     }
 
-    blink(speed, callback) {
+    blink(speed) {
         this.blinking = setInterval(() => {
             this.toggleVisibility();
         }, speed);

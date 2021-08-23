@@ -4,9 +4,6 @@ import Character from "./character.js";
 import { LootException } from "./exceptions.js";
 import log from "./lib/log.js";
 
-// TODO: perhaps use Object.defineProperty with {writable: false} on Player class
-const PLAYER_MAX_LEVEL = 10;
-
 export default class Player extends Character {
     constructor(id, name, kind) {
         super(id, kind);

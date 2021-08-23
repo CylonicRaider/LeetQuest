@@ -275,7 +275,7 @@ export class WorlizeWebSocketConnection extends Connection {
             }
         });
 
-        this._connection.on("close", (connection) => {
+        this._connection.on("close", () => {
             if (this.close_callback) {
                 this.close_callback();
             }
@@ -316,7 +316,7 @@ export class MiksagoWebSocketConnection extends Connection {
             }
         });
 
-        this._connection.on("close", (connection) => {
+        this._connection.on("close", () => {
             if (this.close_callback) {
                 this.close_callback();
             }
