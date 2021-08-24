@@ -27,7 +27,7 @@ See the LICENSE file for details.
 
 ## Credits
 
-BrowserQuest was created by [Little Workshop](https://www.littleworkshop.fr):
-
--   Franck Lecollinet - [@whatthefranck](https://twitter.com/whatthefranck)
--   Guillaume Lecollinet - [@glecollinet](https://twitter.com/glecollinet)
+The original BrowserQuest was created by
+[Franck Lecollinet](https://twitter.com/whatthefranck) and
+[Guillaume Lecollinet](https://twitter.com/glecollinet) from
+[Little Workshop](https://www.littleworkshop.fr).
