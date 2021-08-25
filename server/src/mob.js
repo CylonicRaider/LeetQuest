@@ -104,6 +104,12 @@ export default class Mob extends Character {
 
         if (this.area) {
             this.area.respawnMob(this, delay);
+        } else {
+            setTimeout(() => {
+                if (this.respawn_callback) {
+                    this.respawn_callback();
+                }
+            }, delay);
         }
     }
 

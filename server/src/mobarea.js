@@ -40,8 +40,6 @@ export default class MobArea extends Area {
     }
 
     respawnMob(mob, delay) {
-        super.respawnMob(mob, delay);
-
         setTimeout(() => {
             const pos = this._getRandomPositionInsideArea();
 

@@ -74,7 +74,11 @@ export default class Area {
         this.empty_callback = callback;
     }
 
-    respawnMob(mob, _delay) {
-        this.removeFromArea(mob);
+    respawnMob(mob, delay) {
+        setTimeout(() => {
+            if (mob.respawn_callback) {
+                mob.respawn_callback();
+            }
+        }, delay);
     }
 }

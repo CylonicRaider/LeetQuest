@@ -24,10 +24,6 @@ export default class ChestArea extends Area {
     respawnMob(mob, delay) {
         super.respawnMob(mob, delay);
 
-        setTimeout(() => {
-            if (mob.respawn_callback) {
-                mob.respawn_callback();
-            }
-        }, delay);
+        this.removeFromArea(mob);
     }
 }
