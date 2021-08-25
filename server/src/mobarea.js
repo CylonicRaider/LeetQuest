@@ -49,6 +49,8 @@ export default class MobArea extends Area {
             this.addToArea(mob);
             this.world.addMob(mob);
         }, delay);
+
+        return false;
     }
 
     initRoaming() {

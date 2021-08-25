@@ -102,9 +102,11 @@ export default class Mob extends Character {
     handleRespawn() {
         const delay = 30000;
 
+        let doDefault = true;
         if (this.area) {
-            this.area.respawnMob(this, delay);
-        } else {
+            doDefault = this.area.respawnMob(this, delay);
+        }
+        if (doDefault) {
             setTimeout(() => {
                 if (this.respawn_callback) {
                     this.respawn_callback();
