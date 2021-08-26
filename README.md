@@ -20,6 +20,12 @@ to `config.json`. The configuration file overrides the defaults supplied in
 
 Additional documentation is located in the `client` and `server` directories.
 
+### Contributing
+
+To invoke the code auto-formatter and linter — preferrably before every
+commit —, run `npm run build`. The formatter and linter are available
+separately as `npm run format` and `npm run lint`, respectively.
+
 ## License
 
 Code is licensed under MPL 2.0. Content is licensed under CC-BY-SA 3.0.
