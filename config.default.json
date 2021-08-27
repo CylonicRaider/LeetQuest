@@ -1,0 +1,8 @@
+{
+    "host": null,
+    "port": 8000,
+    "world-count": 5,
+    "world-capacity": 200,
+    "map": "server/maps/world_server.json",
+    "log-level": "info"
+}

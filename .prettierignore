@@ -1,0 +1,4 @@
+/dist
+/client/maps
+/server/maps
+/server/src/index.dev.js
