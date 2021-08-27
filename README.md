@@ -23,7 +23,7 @@ Additional documentation is located in the `client` and `server` directories.
 ### Contributing
 
 To invoke the code auto-formatter and linter — preferrably before every
-commit —, run `npm run build`. The formatter and linter are available
+commit —, run `npm run cleanup`. The formatter and linter are available
 separately as `npm run format` and `npm run lint`, respectively.
 
 ## License
