@@ -36,23 +36,12 @@ Depending on what you want to change, it's therefore not always needed to
 export both maps. Also, each `world_server.json` file change requires a server
 restart.
 
-**How the exporting process works:**
-
-1. The Tiled map TMX file is converted to a temporary JSON file by
-   `tmx2json.js`.
-2. This file is processed by `processmap.js` and returned as an object. This
-   object will have different properties depending on whether we are exporting
-   the client or the server map.
-3. The processed map object is saved as the final world map JSON file(s) in
-   the appropriate directories.
-4. The temporary file from step 1. is deleted.
-
 **Known bugs:**
 
--   There currently needs to be an empty layer at the bottom of the Tiled layer
-    stack or else the first terrain layer will be missing. (I.e., if you remove
-    the "don't remove this layer" layer from the `map.tmx` file, the 'sand'
-    tiles will be missing on the beach.)
+-   There currently needs to be an empty layer at the bottom of the Tiled
+    layer stack or else the first terrain layer will be missing. (I.e., if you
+    remove the "don't remove this layer" layer from the `map.tmx` file, the
+    'sand' tiles will be missing on the beach.)
 
 ## Contributing / Ideas for improvement
 
@@ -64,18 +53,20 @@ Here are a few ideas for anyone who might want to help make this tool better:
 -   Fix known bugs (see the section above).
 -   Write documentation about map editing in the Tiled editor (i.e. editing
     BrowserQuest-specific properties of doors, chests, spawning areas, etc.)
--   Write documentation about the BrowserQuest map JSON format, both for client
-    and server map types.
+-   Write documentation about the BrowserQuest map JSON format, both for
+    client and server map types.
 -   Get rid of the `tmx2json.js` step which can currently take up to several
     minutes. Note: There is a JSON exporter built in Tiled since version 0.8.0
     which could be useful. It is not used because our tool was written before
     the 0.8.0 release.
--   A complete rewrite of this tool using a custom Tiled plugin would surely be
-    a better approach than the current one. Being able to export directly from
-    Tiled would be much easier to use. Also, the export process is currently too
-    slow.
-
--   A complete rewrite of this tool using a custom Tiled plugin would surely be a better approach than the current one. Being able to export directly from Tiled would be much easier to use. Also, the export process is currently too slow.
+-   A complete rewrite of this tool using a custom Tiled plugin would surely
+    be a better approach than the current one. Being able to export directly
+    from Tiled would be much easier to use. Also, the export process is
+    currently too slow.
+-   A complete rewrite of this tool using a custom Tiled plugin would surely
+    be a better approach than the current one. Being able to export directly
+    from Tiled would be much easier to use. Also, the export process is
+    currently too slow.
 
 **Additional resources:**
 
