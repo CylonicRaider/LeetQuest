@@ -19,7 +19,10 @@ export default class Player extends Character {
 
         // modes
         this.isLootMoving = false;
-        this.isSwitchingWeapon = true;
+
+        // Animation
+        this.switchingWeapon = null;
+        this.switchingArmor = null;
     }
 
     loot(item) {
@@ -114,13 +117,11 @@ export default class Player extends Character {
         };
 
         if (newWeaponName !== this.getWeaponName()) {
-            if (this.isSwitchingWeapon) {
-                // TODO: this looks wrong, blanking is 'undefined' here (regardless of the hoisted var)
-                clearInterval(blanking);
+            if (this.switchingWeapon) {
+                clearInterval(this.switchingWeapon);
             }
 
-            this.switchingWeapon = true;
-            var blanking = setInterval(() => {
+            this.switchingWeapon = setInterval(() => {
                 if (toggle()) {
                     this.setWeaponName(newWeaponName);
                 } else {
@@ -129,8 +130,8 @@ export default class Player extends Character {
 
                 count -= 1;
                 if (count === 1) {
-                    clearInterval(blanking);
-                    this.switchingWeapon = false;
+                    clearInterval(this.switchingWeapon);
+                    this.switchingWeapon = null;
 
                     if (this.switch_callback) {
                         this.switch_callback();
@@ -150,21 +151,19 @@ export default class Player extends Character {
         };
 
         if (newArmorSprite && newArmorSprite.id !== this.getSpriteName()) {
-            if (this.isSwitchingArmor) {
-                // TODO: this looks wrong, blanking is 'undefined' here (regardless of the hoisted var)
-                clearInterval(blanking);
+            if (this.switchingArmor) {
+                clearInterval(this.switchingArmor);
             }
 
-            this.isSwitchingArmor = true;
             this.setSprite(newArmorSprite);
             this.setSpriteName(newArmorSprite.id);
-            var blanking = setInterval(() => {
+            this.switchingArmor = setInterval(() => {
                 this.setVisible(toggle());
 
                 count -= 1;
                 if (count === 1) {
-                    clearInterval(blanking);
-                    this.isSwitchingArmor = false;
+                    clearInterval(this.switchingArmor);
+                    this.switchingArmor = null;
 
                     if (this.switch_callback) {
                         this.switch_callback();
