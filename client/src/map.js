@@ -287,16 +287,10 @@ export default class WorldMap {
         return id + 1 in this.animated;
     }
 
-    /**
-     *
-     */
     getTileAnimationLength(id) {
         return this.animated[id + 1].l;
     }
 
-    /**
-     *
-     */
     getTileAnimationDelay(id) {
         var animProperties = this.animated[id + 1];
         if (animProperties.d) {

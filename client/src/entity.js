@@ -157,9 +157,6 @@ export default class Entity {
         }
     }
 
-    /**
-     *
-     */
     getDistanceToEntity(entity) {
         var distX = Math.abs(entity.gridX - this.gridX);
         var distY = Math.abs(entity.gridY - this.gridY);
@@ -195,9 +192,6 @@ export default class Entity {
         return adjacent;
     }
 
-    /**
-     *
-     */
     isAdjacentNonDiagonal(entity) {
         var result = false;
 

@@ -584,9 +584,6 @@ export default class Game {
         log.info("Initialized the item grid.");
     }
 
-    /**
-     *
-     */
     initAnimatedTiles() {
         this.animatedTiles = [];
         this.forEachVisibleTile((id, index) => {
@@ -1829,7 +1826,8 @@ export default class Game {
     }
 
     /**
-     *
+     * Teleports the given character to a given target location.
+     * @see makeCharacterGoTo
      */
     makeCharacterTeleportTo(character, x, y) {
         if (!this.map.isOutOfBounds(x, y)) {
@@ -1864,9 +1862,6 @@ export default class Game {
         }
     }
 
-    /**
-     *
-     */
     makePlayerTalkTo(npc) {
         if (npc) {
             this.player.setTarget(npc);
@@ -1881,17 +1876,11 @@ export default class Game {
         }
     }
 
-    /**
-     *
-     */
     makePlayerAttack(mob) {
         this.createAttackLink(this.player, mob);
         this.client.sendAttack(mob);
     }
 
-    /**
-     *
-     */
     makeNpcTalk(npc) {
         var msg;
 
@@ -1956,9 +1945,6 @@ export default class Game {
         );
     }
 
-    /**
-     *
-     */
     forEachVisibleTileIndex(callback, extra) {
         this.camera.forEachVisiblePosition((x, y) => {
             if (!this.map.isOutOfBounds(x, y)) {
@@ -1967,9 +1953,6 @@ export default class Game {
         }, extra);
     }
 
-    /**
-     *
-     */
     forEachVisibleTile(callback, extra) {
         if (this.map.isLoaded) {
             this.forEachVisibleTileIndex((tileIndex) => {
@@ -1988,9 +1971,6 @@ export default class Game {
         }
     }
 
-    /**
-     *
-     */
     forEachAnimatedTile(callback) {
         if (this.animatedTiles) {
             forEach(this.animatedTiles, (animatedTile) =>
@@ -2148,9 +2128,6 @@ export default class Game {
         }
     }
 
-    /**
-     *
-     */
     movecursor() {
         var mouse = this.getMouseGridPosition(),
             x = mouse.x,
@@ -2331,9 +2308,6 @@ export default class Game {
         return false;
     }
 
-    /**
-     *
-     */
     onCharacterUpdate(character) {
         var time = this.currentTime;
 
@@ -2404,9 +2378,6 @@ export default class Game {
         }
     }
 
-    /**
-     *
-     */
     isZoningTile(x, y) {
         var c = this.camera;
 
@@ -2419,9 +2390,6 @@ export default class Game {
         return false;
     }
 
-    /**
-     *
-     */
     getZoningOrientation(x, y) {
         var orientation = "",
             c = this.camera;

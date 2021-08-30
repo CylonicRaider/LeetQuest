@@ -327,7 +327,7 @@ export default class Character extends Entity {
     }
 
     /**
-     *
+     * Walks to the given position, abandoning anything being done now.
      */
     go(x, y) {
         if (this.isAttacking()) {
@@ -504,9 +504,6 @@ export default class Character extends Entity {
         return this.unconfirmedTarget === character;
     }
 
-    /**
-     *
-     */
     canAttack(time) {
         if (this.canReachTarget() && this.attackCooldown.isOver(time)) {
             return true;
@@ -521,9 +518,6 @@ export default class Character extends Entity {
         return false;
     }
 
-    /**
-     *
-     */
     die() {
         this.removeTarget();
         this.isDead = true;
