@@ -1,5 +1,5 @@
 import pino from "pino";
 
-// TODO: perhaps adjust logging level based on NODE_ENV
+const level = process.env.NODE_ENV == "production" ? "info" : "debug";
 
-export default pino({ level: "info", browser: { asObject: false } });
+export default pino({ level: level, browser: { asObject: false } });

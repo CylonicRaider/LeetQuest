@@ -3,6 +3,9 @@
     "env": {
         "es2020": true
     },
+    "globals": {
+        "process": true
+    },
     "parserOptions": {
         "ecmaVersion": 2020,
         "sourceType": "module"

@@ -1,6 +1,7 @@
 import CopyPlugin from "copy-webpack-plugin";
 import path from "path";
 import { fileURLToPath } from "url";
+import webpack from "webpack";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -10,6 +11,9 @@ export default {
         main: "./client/src/index.js",
     },
     plugins: [
+        new webpack.EnvironmentPlugin({
+            NODE_ENV: "",
+        }),
         new CopyPlugin({
             patterns: [{ from: "./client/assets" }],
         }),
