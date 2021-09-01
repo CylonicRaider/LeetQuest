@@ -17,11 +17,7 @@ export default class WorldMap {
         this.mapLoaded = false;
         this.loadMultiTilesheets = loadMultiTilesheets;
 
-        var useWorker = !(
-            this.game.renderer.mobile || this.game.renderer.tablet
-        );
-
-        this._loadMap(useWorker);
+        this._loadMap();
         this._initTilesets();
     }
 
@@ -34,44 +30,16 @@ export default class WorldMap {
         }
     }
 
-    _loadMap(useWorker) {
-        // TODO: check if this works
-        // var filepath = "maps/world_client.json";
-
-        if (useWorker) {
-            log.info("Loading map with web worker.");
-            var worker = new Worker(new URL("./mapworker.js", import.meta.url));
-            worker.postMessage(1);
-
-            worker.onmessage = (event) => {
-                var map = event.data;
-                this._initMap(map);
-                this.grid = map.grid;
-                this.plateauGrid = map.plateauGrid;
-                this.mapLoaded = true;
-                this._checkReady();
-            };
-        } else {
-            log.info("Loading map via Ajax.");
-            import("../maps/world_client.json").then((data) => {
-                this._initMap(data);
-                this._generateCollisionGrid();
-                this._generatePlateauGrid();
-                this.mapLoaded = true;
-                this._checkReady();
-            });
-            // $.get(
-            //     filepath,
-            //     (data) => {
-            //         this._initMap(data);
-            //         this._generateCollisionGrid();
-            //         this._generatePlateauGrid();
-            //         this.mapLoaded = true;
-            //         this._checkReady();
-            //     },
-            //     "json",
-            // );
-        }
+    _loadMap() {
+        // TODO: Ensure the map is not just bundled into the client code.
+        log.info("Loading map...");
+        import("../maps/world_client.json").then((data) => {
+            this._initMap(data);
+            this._generateCollisionGrid();
+            this._generatePlateauGrid();
+            this.mapLoaded = true;
+            this._checkReady();
+        });
     }
 
     _initTilesets() {
