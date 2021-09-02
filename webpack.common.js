@@ -37,6 +37,7 @@ export default {
         path: path.resolve(__dirname, "dist/client"),
         clean: true,
     },
+    target: ["web", "es5"],
     optimization: {
         usedExports: true,
     },
