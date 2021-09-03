@@ -69,8 +69,6 @@ import villagegirl from "../sprites/villagegirl.json";
 import villager from "../sprites/villager.json";
 import wizard from "../sprites/wizard.json";
 
-// TODO: perhaps use a custom webpack loader to import all json files into an array at once
-
 const SPRITE_OBJECTS = [
     agent,
     arrow,
@@ -144,7 +142,6 @@ const SPRITE_OBJECTS = [
     wizard,
 ];
 
-// TODO: use Map instead
 const sprites = {};
 
 for (const sprite of SPRITE_OBJECTS) {
