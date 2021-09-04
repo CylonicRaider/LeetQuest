@@ -3,6 +3,7 @@ import forEach from "lodash-es/forEach.js";
 import supportsLocalStorage from "modernizr-esm/feature/storage/localstorage";
 
 import App from "./app.js";
+import config from "./config.js";
 import Detect from "./detect.js";
 import Game from "./game.js";
 import log from "./lib/log.js";
@@ -36,7 +37,7 @@ function initApp() {
         parchment.className = "loadcharacter";
     }
 
-    app = new App();
+    app = new App(config);
     app.center();
 
     if (Detect.isWindows()) {

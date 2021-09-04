@@ -16,7 +16,6 @@ import AudioManager from "./audio.js";
 import BubbleManager from "./bubble.js";
 import Character from "./character.js";
 import Chest from "./chest.js";
-import config from "./config.js";
 import { LootException } from "./exceptions.js";
 import GameClient from "./gameclient.js";
 import InfoManager from "./infomanager.js";
@@ -39,7 +38,6 @@ import Warrior from "./warrior.js";
 export default class Game {
     constructor(app) {
         this.app = app;
-        this.app.config = config; // TODO: consider using the config when connecting directly, instead of through this instance property
         this.ready = false;
         this.started = false;
         this.hasNeverStarted = true;

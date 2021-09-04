@@ -6,7 +6,8 @@ import Storage from "./storage.js";
 import { TRANSITIONEND } from "./util.js";
 
 export default class App {
-    constructor() {
+    constructor(config) {
+        this.config = config;
         this.currentPage = 1;
         this.blinkInterval = null;
         this.previousState = null;
