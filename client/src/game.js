@@ -2648,16 +2648,19 @@ export default class Game {
 
         if (this.obsoleteEntities.size > 0) {
             for (const entity of this.obsoleteEntities) {
-                // TODO: obsoleteEntities should never contain the player to begin with
-                if (entity.id != this.player.id) {
+                if (entity.id === this.player.id) {
                     // never remove yourself
-                    this.removeEntity(entity);
+                    log.warn(
+                        "Tried to remove the player (ID " +
+                            entity.id +
+                            "); this should not happen?!",
+                    );
+                    continue;
                 }
+                this.removeEntity(entity);
             }
             log.debug(
-                "Removed " +
-                    nb +
-                    " entities: " +
+                `Removed ${nb} entities: ` +
                     Array.from(this.obsoleteEntities)
                         .map((entity) => entity.id)
                         .filter((id) => id !== this.player.id),
