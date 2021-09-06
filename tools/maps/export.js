@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import process from "process";
 import { fileURLToPath } from "url";
@@ -18,35 +18,30 @@ const mode = process.argv[2] || "both";
 const doClient = mode === "client" || mode === "both";
 const doServer = mode === "server" || mode === "both";
 
+async function compile_map(unprocessedMap, kind, path) {
+    console.log(`Compiling ${kind} map...`);
+    const map = processMap(unprocessedMap, { mode: kind });
+    await fs.writeFile(path, JSON.stringify(map));
+    console.info(`Finished processing map file: ${path} was saved.`);
+}
+
 console.log("Translating map file to JSON...");
 tmx2jsobj(SRC_FILE)
     .then((unprocessedMap) => {
+        const promises = [];
+
         if (doClient) {
-            console.log("Compiling client map...");
-            const clientMap = processMap(unprocessedMap, { mode: "client" });
-            fs.writeFile(CLIENT_DEST_FILE, JSON.stringify(clientMap), (err) => {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.info(
-                        `Finished processing map file: ${CLIENT_DEST_FILE} was saved.`,
-                    );
-                }
-            });
+            promises.push(
+                compile_map(unprocessedMap, "client", CLIENT_DEST_FILE),
+            );
         }
         if (doServer) {
-            console.log("Compiling server map...");
-            const serverMap = processMap(unprocessedMap, { mode: "server" });
-            fs.writeFile(SERVER_DEST_FILE, JSON.stringify(serverMap), (err) => {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.info(
-                        `Finished processing map file: ${SERVER_DEST_FILE} was saved.`,
-                    );
-                }
-            });
+            promises.push(
+                compile_map(unprocessedMap, "server", SERVER_DEST_FILE),
+            );
         }
+
+        return Promise.all(promises);
     })
     .catch((err) => {
         console.error(err);
