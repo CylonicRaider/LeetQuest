@@ -18,7 +18,7 @@ const mode = process.argv[2] || "both";
 const doClient = mode === "client" || mode === "both";
 const doServer = mode === "server" || mode === "both";
 
-async function compile_map(unprocessedMap, kind, path) {
+async function compileMap(unprocessedMap, kind, path) {
     console.log(`Compiling ${kind} map...`);
     const map = processMap(unprocessedMap, { mode: kind });
     await fs.writeFile(path, JSON.stringify(map));
@@ -32,12 +32,12 @@ tmx2jsobj(SRC_FILE)
 
         if (doClient) {
             promises.push(
-                compile_map(unprocessedMap, "client", CLIENT_DEST_FILE),
+                compileMap(unprocessedMap, "client", CLIENT_DEST_FILE),
             );
         }
         if (doServer) {
             promises.push(
-                compile_map(unprocessedMap, "server", SERVER_DEST_FILE),
+                compileMap(unprocessedMap, "server", SERVER_DEST_FILE),
             );
         }
 
