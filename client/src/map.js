@@ -33,7 +33,7 @@ export default class WorldMap {
     _loadMap() {
         // TODO: Ensure the map is not just bundled into the client code.
         log.info("Loading map...");
-        import("../maps/world_client.json").then((data) => {
+        import("../maps/world_client.json").then(({ default: data }) => {
             this._initMap(data);
             this._generateCollisionGrid();
             this._generatePlateauGrid();
@@ -183,10 +183,10 @@ export default class WorldMap {
 
     _generateCollisionGrid() {
         this.grid = [];
-        for (var j, i = 0; i < this.height; i++) {
-            this.grid[i] = [];
-            for (j = 0; j < this.width; j++) {
-                this.grid[i][j] = 0;
+        for (let i = 0; i < this.height; i++) {
+            this.grid.push([]);
+            for (let j = 0; j < this.width; j++) {
+                this.grid[i].push(0);
             }
         }
 
@@ -197,9 +197,7 @@ export default class WorldMap {
 
         forEach(this.blocking, (tileIndex) => {
             var pos = this.tileIndexToGridPosition(tileIndex + 1);
-            if (this.grid[pos.y] !== undefined) {
-                this.grid[pos.y][pos.x] = 1;
-            }
+            this.grid[pos.y][pos.x] = 1;
         });
         log.info("Collision grid generated.");
     }
@@ -208,15 +206,15 @@ export default class WorldMap {
         var tileIndex = 0;
 
         this.plateauGrid = [];
-        for (var j, i = 0; i < this.height; i++) {
-            this.plateauGrid[i] = [];
-            for (j = 0; j < this.width; j++) {
+        for (let i = 0; i < this.height; i++) {
+            this.plateauGrid.push([]);
+            for (let j = 0; j < this.width; j++) {
                 if (includes(this.plateau, tileIndex)) {
-                    this.plateauGrid[i][j] = 1;
+                    this.plateauGrid[i].push(1);
                 } else {
-                    this.plateauGrid[i][j] = 0;
+                    this.plateauGrid[i].push(0);
                 }
-                tileIndex += 1;
+                tileIndex++;
             }
         }
         log.info("Plateau grid generated.");
