@@ -203,17 +203,14 @@ export default class WorldMap {
     }
 
     _generatePlateauGrid() {
-        var tileIndex = 0;
+        const plateauSet = new Set(this.plateau);
 
         this.plateauGrid = [];
+        let tileIndex = 0;
         for (let i = 0; i < this.height; i++) {
             this.plateauGrid.push([]);
             for (let j = 0; j < this.width; j++) {
-                if (includes(this.plateau, tileIndex)) {
-                    this.plateauGrid[i].push(1);
-                } else {
-                    this.plateauGrid[i].push(0);
-                }
+                this.plateauGrid[i].push(plateauSet.has(tileIndex) ? 1 : 0);
                 tileIndex++;
             }
         }
