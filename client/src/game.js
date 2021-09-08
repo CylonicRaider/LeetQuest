@@ -55,8 +55,7 @@ export default class Game {
         // Game state
         this.entities = new Map();
         this.obsoleteEntities = new Set();
-        // TODO: use Maps instead of objects
-        this.deathpositions = {};
+        this.deathpositions = new Map();
         this.entityGrid = null;
         this.pathingGrid = null;
         this.renderingGrid = null;
@@ -1388,10 +1387,10 @@ export default class Game {
                                         if (entity instanceof Mob) {
                                             // Keep track of where mobs die in order to spawn their dropped items
                                             // at the right position later.
-                                            this.deathpositions[entity.id] = {
+                                            this.deathpositions.set(entity.id, {
                                                 x: entity.gridX,
                                                 y: entity.gridY,
-                                            };
+                                            });
                                         }
 
                                         entity.isDying = true;
@@ -2602,14 +2601,9 @@ export default class Game {
     }
 
     getDeadMobPosition(mobId) {
-        var position;
-
-        if (mobId in this.deathpositions) {
-            position = this.deathpositions[mobId];
-            delete this.deathpositions[mobId];
-        }
-
-        return position;
+        const result = this.deathpositions.get(mobId);
+        this.deathpositions.delete(mobId);
+        return result;
     }
 
     onAchievementUnlock(callback) {
