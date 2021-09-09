@@ -363,13 +363,12 @@ export default class Renderer {
 
     drawScaledImage(ctx, image, x, y, w, h, dx, dy) {
         var s = this.upscaledRendering ? 1 : this.scale;
-        // TODO: cleanup
         [ctx, image, x, y, w, h, dx, dy].forEach((arg) => {
-            if (isUndefined(arg) || isNaN(arg) || isNull(arg) || arg < 0) {
-                // FIXME: stacktrace
-                log.error(`x:${x} y:${y} w:${w} h:${h} dx:${dx} dy:${dy}`);
+            if (isUndefined(arg) || isNull(arg) || isNaN(arg) || arg < 0) {
                 throw Error(
-                    "A problem occured when trying to draw on the canvas",
+                    "A problem occured when trying to draw on the canvas: " +
+                        "One of these parameters is not nonnegative number: " +
+                        `x:${x} y:${y} w:${w} h:${h} dx:${dx} dy:${dy}`,
                 );
             }
         });
