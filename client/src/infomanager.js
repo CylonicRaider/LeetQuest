@@ -51,7 +51,6 @@ const damageInfoColors = {
     },
 };
 
-// TODO: perhaps use Object.defineProperty with {writable: false} on DamageInfo class or a static class field as soon as ESLint 8 comes out
 const DAMAGE_INFO_DURATION = 1000;
 
 class DamageInfo {
