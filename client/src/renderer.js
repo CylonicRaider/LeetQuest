@@ -393,11 +393,11 @@ export default class Renderer {
             this.drawScaledImage(
                 ctx,
                 tileset,
-                getX(tileid + 1, setW / s) * this.tilesize,
+                (tileid % (setW / s)) * this.tilesize,
                 Math.floor(tileid / (setW / s)) * this.tilesize,
                 this.tilesize,
                 this.tilesize,
-                getX(cellid + 1, gridW) * this.tilesize,
+                (cellid % gridW) * this.tilesize,
                 Math.floor(cellid / gridW) * this.tilesize,
             );
         }
@@ -406,7 +406,7 @@ export default class Renderer {
     clearTile(ctx, gridW, cellid) {
         var s = this.scale,
             ts = this.tilesize,
-            x = getX(cellid + 1, gridW) * ts * s,
+            x = (cellid % gridW) * ts * s,
             y = Math.floor(cellid / gridW) * ts * s,
             w = ts * s,
             h = w;
@@ -634,7 +634,7 @@ export default class Renderer {
             ts = this.tilesize,
             cellid = tile.index;
 
-        rect.x = (getX(cellid + 1, gridW) * ts - this.camera.x) * s;
+        rect.x = ((cellid % gridW) * ts - this.camera.x) * s;
         rect.y = (Math.floor(cellid / gridW) * ts - this.camera.y) * s;
         rect.w = ts * s;
         rect.h = ts * s;
@@ -929,12 +929,4 @@ export default class Renderer {
             this.foreground.fillRect(0, 0, 0, 0);
         }
     }
-}
-
-// TODO: move into utils OSLT (also seen multiple times in game.js)
-function getX(id, w) {
-    if (id == 0) {
-        return 0;
-    }
-    return id % w == 0 ? w - 1 : (id % w) - 1;
 }
