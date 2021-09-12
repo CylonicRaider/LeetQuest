@@ -81,10 +81,8 @@ class Connection {
 
     close(logError) {
         log.info(
-            "Closing connection to " +
-                this._connection.remoteAddress +
-                ". Error: " +
-                logError,
+            `Closing connection to ${this._connection.remoteAddress}.` +
+                (logError ? ` Error: ${logError}` : ""),
         );
         this._connection.close();
     }
