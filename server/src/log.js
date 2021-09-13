@@ -1,6 +1,10 @@
 import pino from "pino";
+import pinoHttp from "pino-http";
 
 // TODO: consider writing errors and warnings to a file for production
-// TODO: consider using express-pino-logger, pino-http OSLT
 
-export default pino({ level: process.env.LOG_LEVEL || "info" });
+const LOGGER = pino({ level: process.env.LOG_LEVEL || "info" });
+
+export default LOGGER;
+
+export const http = pinoHttp({ logger: LOGGER });

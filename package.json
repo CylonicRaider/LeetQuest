@@ -12,6 +12,7 @@
         "merge": "^2.1.1",
         "modernizr-esm": "^2.0.0",
         "pino": "^6.13.2",
+        "pino-http": "^5.7.0",
         "sanitize-html": "^2.4.0",
         "websocket": "^1.0.34",
         "websocket-server": "ThisIsMissEm/node-websocket-server#v1.4.04"

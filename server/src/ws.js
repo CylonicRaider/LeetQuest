@@ -6,7 +6,7 @@ import websocket from "websocket";
 import { createServer } from "websocket-server";
 import miksagoConnection from "websocket-server/lib/ws/connection.js";
 
-import log from "./log.js";
+import { default as log, http as httpLog } from "./log.js";
 import buildStaticApp from "./static.js";
 import * as Utils from "./utils.js";
 
@@ -118,6 +118,7 @@ export class MultiVersionWebsocketServer extends Server {
 
         this._statics = buildStaticApp();
         this._httpServer = _createServer((request, response) => {
+            httpLog(request, response);
             const path = new URL(request.url, `http://${request.headers.host}`)
                 .pathname;
             switch (path) {
