@@ -212,8 +212,8 @@ export class MultiVersionWebsocketServer extends Server {
     _onWSConnection(c, path) {
         switch (path) {
             case "/dispatch":
-                // TODO: Retrieve the host and port the request used and
-                //       reflect them back explicitly.
+                // If the client has already reached this server, it should
+                // know how it did it.
                 c.send({ status: "OK", host: null, port: null });
                 c.close();
                 return;
