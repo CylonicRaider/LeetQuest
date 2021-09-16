@@ -3,7 +3,9 @@
     "version": "0.0.2",
     "type": "module",
     "dependencies": {
+        "basic-auth": "^2.0.1",
         "bison": "^1.1.1",
+        "clf-date": "^0.2.0",
         "express": "^4.17.1",
         "he": "^1.2.0",
         "htmlparser2": "^7.1.1",
