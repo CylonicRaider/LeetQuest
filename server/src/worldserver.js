@@ -14,7 +14,6 @@ import Chest from "./chest.js";
 import ChestArea from "./chestarea.js";
 import Item from "./item.js";
 import log from "./log.js";
-import Map from "./map.js";
 import {
     Population,
     Destroy,
@@ -31,6 +30,7 @@ import Npc from "./npc.js";
 import Player from "./player.js";
 import Properties from "./properties.js";
 import * as Utils from "./utils.js";
+import WorldMap from "./worldmap.js";
 
 // ======= GAME SERVER ========
 
@@ -172,7 +172,7 @@ export default class World {
     }
 
     run(mapFilePath) {
-        this.map = new Map(mapFilePath);
+        this.map = new WorldMap(mapFilePath);
 
         this.map.ready(() => {
             this.initZoneGroups();

@@ -8,7 +8,7 @@ import Checkpoint from "./checkpoint.js";
 import log from "./log.js";
 import * as Utils from "./utils.js";
 
-export default class Map {
+export default class WorldMap {
     constructor(filepath) {
         this.isLoaded = false;
 
