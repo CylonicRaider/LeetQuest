@@ -45,14 +45,11 @@ export default class World {
 
         this.map = null;
 
-        this.entities = {};
-        this.players = {};
-        this.mobs = {};
-        this.attackers = {};
-        this.items = {};
-        this.equipping = {};
-        this.hurt = {};
-        this.npcs = {};
+        this.entities = new Map();
+        this.players = new Map();
+        this.mobs = new Map();
+        this.items = new Map();
+        this.npcs = new Map();
         this.mobAreas = [];
         this.chestAreas = [];
         this.groups = {};
@@ -354,20 +351,14 @@ export default class World {
     }
 
     addEntity(entity) {
-        this.entities[entity.id] = entity;
+        this.entities.set(entity.id, entity);
         this.handleEntityGroupMembership(entity);
     }
 
     removeEntity(entity) {
-        if (entity.id in this.entities) {
-            delete this.entities[entity.id];
-        }
-        if (entity.id in this.mobs) {
-            delete this.mobs[entity.id];
-        }
-        if (entity.id in this.items) {
-            delete this.items[entity.id];
-        }
+        this.entities.delete(entity.id);
+        this.mobs.delete(entity.id);
+        this.items.delete(entity.id);
 
         if (entity.type === "mob") {
             this.clearMobAggroLink(entity);
@@ -383,7 +374,7 @@ export default class World {
 
     addPlayer(player) {
         this.addEntity(player);
-        this.players[player.id] = player;
+        this.players.set(player.id, player);
         this.outgoingQueues[player.id] = [];
 
         //log.info("Added player : " + player.id);
@@ -392,26 +383,28 @@ export default class World {
     removePlayer(player) {
         player.broadcast(player.despawn());
         this.removeEntity(player);
-        delete this.players[player.id];
+        this.players.delete(player.id);
         delete this.outgoingQueues[player.id];
     }
 
     addMob(mob) {
         this.addEntity(mob);
-        this.mobs[mob.id] = mob;
+        this.mobs.set(mob.id, mob);
+
+        return mob;
     }
 
     addNpc(kind, x, y) {
         const npc = new Npc(`8${x}${y}`, kind, x, y);
         this.addEntity(npc);
-        this.npcs[npc.id] = npc;
+        this.npcs.set(npc.id, npc);
 
         return npc;
     }
 
     addItem(item) {
         this.addEntity(item);
-        this.items[item.id] = item;
+        this.items.set(item.id, item);
 
         return item;
     }
@@ -472,21 +465,15 @@ export default class World {
     }
 
     forEachEntity(callback) {
-        for (const id in this.entities) {
-            callback(this.entities[id]);
-        }
+        forEach(this.entities.values(), callback);
     }
 
     forEachPlayer(callback) {
-        for (const id in this.players) {
-            callback(this.players[id]);
-        }
+        forEach(this.players.values(), callback);
     }
 
     forEachMob(callback) {
-        for (const id in this.mobs) {
-            callback(this.mobs[id]);
-        }
+        forEach(this.mobs.values(), callback);
     }
 
     forEachCharacter(callback) {
@@ -529,21 +516,16 @@ export default class World {
     }
 
     getEntityById(id) {
-        if (id in this.entities) {
-            return this.entities[id];
-        } else {
-            log.error(`Unknown entity : ${id}`);
+        const result = this.entities.get(id);
+        if (result === undefined) {
+            // TODO: Find out why this happens, fix that, and make this an Error.
+            log.error(`Requested unknown entity ${id}`);
         }
+        return result;
     }
 
     getPlayerCount() {
-        let count = 0;
-        for (const p in this.players) {
-            if (Object.hasOwnProperty.call(this.players, p)) {
-                count += 1;
-            }
-        }
-        return count;
+        return this.players.size;
     }
 
     broadcastAttacker(character) {
@@ -596,7 +578,7 @@ export default class World {
     despawn(entity) {
         this.pushToAdjacentGroups(entity.group, entity.despawn());
 
-        if (entity.id in this.entities) {
+        if (this.entities.has(entity.id)) {
             this.removeEntity(entity);
         }
     }
