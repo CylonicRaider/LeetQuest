@@ -1,8 +1,6 @@
 import difference from "lodash-es/difference.js";
 import forEach from "lodash-es/forEach.js";
-import includes from "lodash-es/includes.js";
 import isNumber from "lodash-es/isNumber.js";
-import keys from "lodash-es/keys.js";
 import map from "lodash-es/map.js";
 import reject from "lodash-es/reject.js";
 import size from "lodash-es/size.js";
@@ -52,7 +50,7 @@ export default class World {
         this.npcs = new Map();
         this.mobAreas = [];
         this.chestAreas = [];
-        this.groups = {};
+        this.groups = new Map();
 
         this.outgoingQueues = {};
 
@@ -274,8 +272,8 @@ export default class World {
     }
 
     pushRelevantEntityListTo(player) {
-        if (player && player.group in this.groups) {
-            let entities = keys(this.groups[player.group].entities);
+        if (player && this.groups.has(player.group)) {
+            let entities = [...this.groups.get(player.group).entities.keys()];
             entities = reject(entities, (id) => id == player.id);
             entities = map(entities, (id) => parseInt(id));
             if (entities) {
@@ -304,7 +302,7 @@ export default class World {
     }
 
     pushToGroup(groupId, message, ignoredPlayer) {
-        const group = this.groups[groupId];
+        const group = this.groups.get(groupId);
 
         if (group) {
             forEach(group.players, (playerId) => {
@@ -703,11 +701,11 @@ export default class World {
 
     initZoneGroups() {
         this.map.forEachGroup((id) => {
-            this.groups[id] = {
-                entities: {},
+            this.groups.set(id, {
+                entities: new Map(),
                 players: [],
                 incoming: [],
-            };
+            });
         });
         this.zoneGroupsReady = true;
     }
@@ -716,14 +714,14 @@ export default class World {
         const oldGroups = [];
 
         if (entity && entity.group) {
-            const group = this.groups[entity.group];
+            const group = this.groups.get(entity.group);
             if (entity instanceof Player) {
                 group.players = reject(group.players, (id) => id === entity.id);
             }
 
             this.map.forEachAdjacentGroup(entity.group, (id) => {
-                if (entity.id in this.groups[id].entities) {
-                    delete this.groups[id].entities[entity.id];
+                if (this.groups.get(id).entities.has(entity.id)) {
+                    this.groups.get(id).entities.delete(entity.id);
                     oldGroups.push(id);
                 }
             });
@@ -744,12 +742,12 @@ export default class World {
 
         if (entity && groupId) {
             this.map.forEachAdjacentGroup(groupId, (id) => {
-                const group = this.groups[id];
+                const group = this.groups.get(id);
 
                 if (group) {
                     if (
-                        !includes(group.entities, entity.id) &&
-                        //  Items dropped off of mobs are handled differently via DROP messages. See handleHurtEntity.
+                        !group.entities.has(entity.id) &&
+                        // Items dropped off of mobs are handled differently via DROP messages. See handleHurtEntity.
                         (!isItem || isChest || (isItem && !isDroppedItem))
                     ) {
                         group.incoming.push(entity);
@@ -762,15 +760,15 @@ export default class World {
     addToGroup(entity, groupId) {
         const newGroups = [];
 
-        if (entity && groupId && groupId in this.groups) {
+        if (entity && groupId && this.groups.has(groupId)) {
             this.map.forEachAdjacentGroup(groupId, (id) => {
-                this.groups[id].entities[entity.id] = entity;
+                this.groups.get(id).entities.set(entity.id, entity);
                 newGroups.push(id);
             });
             entity.group = groupId;
 
             if (entity instanceof Player) {
-                this.groups[groupId].players.push(entity.id);
+                this.groups.get(groupId).players.push(entity.id);
             }
         }
         return newGroups;
@@ -778,7 +776,7 @@ export default class World {
 
     logGroupPlayers(groupId) {
         log.debug(`Players inside group ${groupId}:`);
-        forEach(this.groups[groupId].players, (id) => {
+        forEach(this.groups.get(groupId).players, (id) => {
             log.debug(`- player ${id}`);
         });
     }
@@ -808,15 +806,15 @@ export default class World {
     processGroups() {
         if (this.zoneGroupsReady) {
             this.map.forEachGroup((id) => {
-                if (this.groups[id].incoming.length > 0) {
-                    forEach(this.groups[id].incoming, (entity) => {
+                if (this.groups.get(id).incoming.length > 0) {
+                    forEach(this.groups.get(id).incoming, (entity) => {
                         if (entity instanceof Player) {
                             this.pushToGroup(id, new Spawn(entity), entity.id);
                         } else {
                             this.pushToGroup(id, new Spawn(entity));
                         }
                     });
-                    this.groups[id].incoming = [];
+                    this.groups.get(id).incoming = [];
                 }
             });
         }
