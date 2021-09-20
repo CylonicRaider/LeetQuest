@@ -52,7 +52,7 @@ export default class World {
         this.chestAreas = [];
         this.groups = new Map();
 
-        this.outgoingQueues = {};
+        this.outgoingQueues = new Map();
 
         this.itemCount = 0;
         this.playerCount = 0;
@@ -294,8 +294,8 @@ export default class World {
     }
 
     pushToPlayer(player, message) {
-        if (player && player.id in this.outgoingQueues) {
-            this.outgoingQueues[player.id].push(message.serialize());
+        if (player && this.outgoingQueues.has(player.id)) {
+            this.outgoingQueues.get(player.id).push(message.serialize());
         } else {
             log.error("pushToPlayer: player was undefined");
         }
@@ -331,19 +331,19 @@ export default class World {
     }
 
     pushBroadcast(message, ignoredPlayer) {
-        for (const id in this.outgoingQueues) {
+        for (const [id, queue] of this.outgoingQueues) {
             if (id != ignoredPlayer) {
-                this.outgoingQueues[id].push(message.serialize());
+                queue.push(message.serialize());
             }
         }
     }
 
     processQueues() {
-        for (const id in this.outgoingQueues) {
-            if (this.outgoingQueues[id].length > 0) {
+        for (const [id, queue] of this.outgoingQueues) {
+            if (queue.length > 0) {
                 const connection = this.server.getConnection(id);
-                connection.send(this.outgoingQueues[id]);
-                this.outgoingQueues[id] = [];
+                connection.send(queue);
+                this.outgoingQueues.set(id, []);
             }
         }
     }
@@ -373,7 +373,7 @@ export default class World {
     addPlayer(player) {
         this.addEntity(player);
         this.players.set(player.id, player);
-        this.outgoingQueues[player.id] = [];
+        this.outgoingQueues.set(player.id, []);
 
         //log.info("Added player : " + player.id);
     }
@@ -382,7 +382,7 @@ export default class World {
         player.broadcast(player.despawn());
         this.removeEntity(player);
         this.players.delete(player.id);
-        delete this.outgoingQueues[player.id];
+        this.outgoingQueues.delete(player.id);
     }
 
     addMob(mob) {
