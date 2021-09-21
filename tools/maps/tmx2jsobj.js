@@ -33,7 +33,7 @@ export default async function txm2jsobj(tmxInputPath) {
 
                 ontext(text) {
                     if (/^\s*$/.test(text)) return;
-                    throw new Error("Unexpected text in map file!");
+                    input.destroy(new Error("Unexpected text in map file!"));
                 },
 
                 onclosetag(_name) {
@@ -51,13 +51,9 @@ export default async function txm2jsobj(tmxInputPath) {
             { xmlMode: true },
         );
 
-        try {
-            input.pipe(parser).on("finish", () => {
-                resolve(stateStack[0].props);
-            });
-        } catch (err) {
-            // TODO: error thrown in parser handler can't seem to be caught here
-            reject(err);
-        }
+        input.on("error", reject);
+        input.pipe(parser).on("finish", () => {
+            resolve(stateStack[0].props);
+        });
     });
 }
