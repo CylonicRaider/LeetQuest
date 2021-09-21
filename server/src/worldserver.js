@@ -32,8 +32,6 @@ import WorldMap from "./worldmap.js";
 
 // ======= GAME SERVER ========
 
-// TODO: use JS Map data structures where appropriate instead of bare objects
-
 export default class World {
     constructor(id, maxPlayers, websocketServer) {
         this.id = id;
