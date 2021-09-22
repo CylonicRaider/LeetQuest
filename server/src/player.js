@@ -134,29 +134,36 @@ export default class Player extends Character {
                     this.server.broadcastAttacker(this);
                 }
             } else if (action === Types.Messages.HIT) {
-                const mob = this.server.getEntityById(message[1]);
-                if (mob) {
-                    const dmg = Formulas.dmg(this.weaponLevel, mob.armorLevel);
+                if (this.server.hasEntity(message[1])) {
+                    const mob = this.server.getEntityById(message[1]);
+                    if (mob) {
+                        const dmg = Formulas.dmg(
+                            this.weaponLevel,
+                            mob.armorLevel,
+                        );
 
-                    if (dmg > 0) {
-                        mob.receiveDamage(dmg, this.id);
-                        this.server.handleMobHate(mob.id, this.id, dmg);
-                        this.server.handleHurtEntity(mob, this, dmg);
+                        if (dmg > 0) {
+                            mob.receiveDamage(dmg, this.id);
+                            this.server.handleMobHate(mob.id, this.id, dmg);
+                            this.server.handleHurtEntity(mob, this, dmg);
+                        }
                     }
                 }
             } else if (action === Types.Messages.HURT) {
-                const mob = this.server.getEntityById(message[1]);
-                if (mob && this.hitPoints > 0) {
-                    this.hitPoints -= Formulas.dmg(
-                        mob.weaponLevel,
-                        this.armorLevel,
-                    );
-                    this.server.handleHurtEntity(this);
+                if (this.server.hasEntity(message[1])) {
+                    const mob = this.server.getEntityById(message[1]);
+                    if (mob && this.hitPoints > 0) {
+                        this.hitPoints -= Formulas.dmg(
+                            mob.weaponLevel,
+                            this.armorLevel,
+                        );
+                        this.server.handleHurtEntity(this);
 
-                    if (this.hitPoints <= 0) {
-                        this.isDead = true;
-                        if (this.firepotionTimeout) {
-                            clearTimeout(this.firepotionTimeout);
+                        if (this.hitPoints <= 0) {
+                            this.isDead = true;
+                            if (this.firepotionTimeout) {
+                                clearTimeout(this.firepotionTimeout);
+                            }
                         }
                     }
                 }

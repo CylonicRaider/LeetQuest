@@ -511,10 +511,14 @@ export default class World {
         this.attack_callback = callback;
     }
 
+    hasEntity(id) {
+        return this.entities.has(id);
+    }
+
     getEntityById(id) {
         const result = this.entities.get(id);
         if (result === undefined) {
-            // TODO: Find out why this happens, fix that, and make this an Error.
+            // TODO: Find all causes of this.
             log.error(`Requested unknown entity ${id}`);
         }
         return result;
