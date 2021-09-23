@@ -114,7 +114,7 @@ export default class Player extends Character {
                 if (this.lootmove_callback) {
                     this.setPosition(message[1], message[2]);
 
-                    const item = this.server.getEntityById(message[3]);
+                    const item = this.server.getEntityOrNull(message[3]);
                     if (item) {
                         this.clearTarget();
 
@@ -127,48 +127,41 @@ export default class Player extends Character {
                     this.server.handleMobHate(message[1], this.id, 5);
                 }
             } else if (action === Types.Messages.ATTACK) {
-                const mob = this.server.getEntityById(message[1]);
+                const mob = this.server.getEntityOrNull(message[1]);
 
                 if (mob) {
                     this.setTarget(mob);
                     this.server.broadcastAttacker(this);
                 }
             } else if (action === Types.Messages.HIT) {
-                if (this.server.hasEntity(message[1])) {
-                    const mob = this.server.getEntityById(message[1]);
-                    if (mob) {
-                        const dmg = Formulas.dmg(
-                            this.weaponLevel,
-                            mob.armorLevel,
-                        );
+                const mob = this.server.getEntityOrNull(message[1]);
+                if (mob) {
+                    const dmg = Formulas.dmg(this.weaponLevel, mob.armorLevel);
 
-                        if (dmg > 0) {
-                            mob.receiveDamage(dmg, this.id);
-                            this.server.handleMobHate(mob.id, this.id, dmg);
-                            this.server.handleHurtEntity(mob, this, dmg);
-                        }
+                    if (dmg > 0) {
+                        mob.receiveDamage(dmg, this.id);
+                        this.server.handleMobHate(mob.id, this.id, dmg);
+                        this.server.handleHurtEntity(mob, this, dmg);
                     }
                 }
             } else if (action === Types.Messages.HURT) {
-                if (this.server.hasEntity(message[1])) {
-                    const mob = this.server.getEntityById(message[1]);
-                    if (mob && this.hitPoints > 0) {
-                        this.hitPoints -= Formulas.dmg(
-                            mob.weaponLevel,
-                            this.armorLevel,
-                        );
-                        this.server.handleHurtEntity(this);
+                const mob = this.server.getEntityOrNull(message[1]);
+                if (mob && this.hitPoints > 0) {
+                    this.hitPoints -= Formulas.dmg(
+                        mob.weaponLevel,
+                        this.armorLevel,
+                    );
+                    this.server.handleHurtEntity(this);
 
-                        if (this.hitPoints <= 0) {
-                            this.isDead = true;
-                            if (this.firepotionTimeout) {
-                                clearTimeout(this.firepotionTimeout);
-                            }
+                    if (this.hitPoints <= 0) {
+                        this.isDead = true;
+                        if (this.firepotionTimeout) {
+                            clearTimeout(this.firepotionTimeout);
                         }
                     }
                 }
             } else if (action === Types.Messages.LOOT) {
-                const item = this.server.getEntityById(message[1]);
+                const item = this.server.getEntityOrNull(message[1]);
 
                 if (item) {
                     const kind = item.kind;
@@ -228,7 +221,7 @@ export default class Player extends Character {
                     this.server.pushRelevantEntityListTo(this);
                 }
             } else if (action === Types.Messages.OPEN) {
-                const chest = this.server.getEntityById(message[1]);
+                const chest = this.server.getEntityOrNull(message[1]);
                 if (chest && chest instanceof Chest) {
                     this.server.handleOpenedChest(chest, this);
                 }

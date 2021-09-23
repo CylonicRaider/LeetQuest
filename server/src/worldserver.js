@@ -524,6 +524,12 @@ export default class World {
         return result;
     }
 
+    getEntityOrNull(id) {
+        const result = this.entities.get(id);
+        if (result === undefined) return null;
+        return result;
+    }
+
     getPlayerCount() {
         return this.players.size;
     }
