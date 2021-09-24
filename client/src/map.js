@@ -1,3 +1,4 @@
+import $ from "jquery";
 import find from "lodash-es/find.js";
 import forEach from "lodash-es/forEach.js";
 import includes from "lodash-es/includes.js";
@@ -31,15 +32,18 @@ export default class WorldMap {
     }
 
     _loadMap() {
-        // TODO: Ensure the map is not just bundled into the client code.
         log.info("Loading map...");
-        import("../maps/world_client.json").then(({ default: data }) => {
-            this._initMap(data);
-            this._generateCollisionGrid();
-            this._generatePlateauGrid();
-            this.mapLoaded = true;
-            this._checkReady();
-        });
+        $.get(
+            "maps/world_client.json",
+            (data) => {
+                this._initMap(data);
+                this._generateCollisionGrid();
+                this._generatePlateauGrid();
+                this.mapLoaded = true;
+                this._checkReady();
+            },
+            "json",
+        );
     }
 
     _initTilesets() {

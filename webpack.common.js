@@ -15,7 +15,10 @@ export default {
             NODE_ENV: "",
         }),
         new CopyPlugin({
-            patterns: [{ from: "./client/assets" }],
+            patterns: [
+                { from: "./client/assets" },
+                { from: "./client/maps", to: "maps" },
+            ],
         }),
     ],
     module: {
