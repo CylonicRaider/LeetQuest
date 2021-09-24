@@ -5,7 +5,7 @@ import webpack from "webpack";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// TODO: use html template plugin and then add splitChunks optimization
+// TODO: use html template plugin; enable chunk splitting
 export default {
     entry: {
         main: "./client/src/index.js",
@@ -43,5 +43,12 @@ export default {
     target: ["web", "es5"],
     optimization: {
         usedExports: true,
+    },
+    performance: {
+        assetFilter(filename) {
+            return !/\.(map|png|mp3|ogg)$/.test(filename);
+        },
+        maxAssetSize: 1 << 20,
+        maxEntrypointSize: 1 << 20,
     },
 };
