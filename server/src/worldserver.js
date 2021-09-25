@@ -518,7 +518,7 @@ export default class World {
     getEntityById(id) {
         const result = this.entities.get(id);
         if (result === undefined) {
-            // TODO: Find all causes of this.
+            // FIXME: Find all causes of this, and eliminate them.
             log.error(`Requested unknown entity ${id}`);
         }
         return result;
