@@ -4,6 +4,7 @@
         "es2020": true
     },
     "globals": {
+        "console": true,
         "process": true
     },
     "parserOptions": {
