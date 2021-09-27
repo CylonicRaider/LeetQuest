@@ -1,6 +1,8 @@
 import childProcess from "child_process";
 import isMain from "es-main";
+import ignoreWalk from "ignore-walk";
 import minimist from "minimist";
+import path from "path";
 import process from "process";
 
 function waitOnRawEvent(object, event, callback = null) {
@@ -18,19 +20,33 @@ function waitOnRawEvent(object, event, callback = null) {
 }
 
 function asArray(value) {
-    return Array.isArray(value) ? value : [value];
+    return value == null ? [] : Array.isArray(value) ? value : [value];
+}
+
+export async function enumerateFiles(entryPoints, extensions, ignoreFiles) {
+    const walks = entryPoints.map((ep) =>
+        ignoreWalk({
+            path: ep,
+            ignoreFiles: ignoreFiles,
+        }),
+    );
+    const rawFiles = new Set((await Promise.all(walks)).flat());
+    return [...rawFiles].filter((fn) => extensions.includes(path.extname(fn)));
 }
 
 export default async function main(argv) {
     const args = minimist(argv);
     const configFiles = asArray(args.c);
-    const ignoreFiles = asArray(args.i);
     const entryPoints = asArray(args.e);
+    const ignoreFiles = asArray(args.i);
+    const extensions = asArray(args.x);
     const cmdline = args._;
+
+    let files = await enumerateFiles(entryPoints, extensions, ignoreFiles);
 
     const child = childProcess.spawn(
         cmdline[0],
-        cmdline.slice(1).concat(entryPoints),
+        cmdline.slice(1).concat(files),
         { stdio: "inherit" },
     );
     return await waitOnRawEvent(child, "close", (code, signal) => {

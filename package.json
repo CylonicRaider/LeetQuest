@@ -10,6 +10,7 @@
         "express": "^4.17.1",
         "he": "^1.2.0",
         "htmlparser2": "^7.1.1",
+        "ignore-walk": "^4.0.1",
         "jquery": "^3.6.0",
         "lodash-es": "^4.17.21",
         "merge": "^2.1.1",
