@@ -1,5 +1,6 @@
 import childProcess from "child_process";
 import isMain from "es-main";
+import fs from "fs/promises";
 import ignoreWalk from "ignore-walk";
 import minimist from "minimist";
 import path from "path";
@@ -23,15 +24,24 @@ function asArray(value) {
     return value == null ? [] : Array.isArray(value) ? value : [value];
 }
 
-export async function enumerateFiles(entryPoints, extensions, ignoreFiles) {
-    const walks = entryPoints.map((ep) =>
-        ignoreWalk({
+async function asyncIterToArray(iterable) {
+    const result = [];
+    for await (const item of iterable) result.push(item);
+    return result;
+}
+
+export async function* enumerateFiles(entryPoints, extensions, ignoreFiles) {
+    for (const ep of entryPoints) {
+        if (!(await fs.stat(ep)).isDirectory()) {
+            yield ep;
+            continue;
+        }
+        const walked = await ignoreWalk({
             path: ep,
             ignoreFiles: ignoreFiles,
-        }),
-    );
-    const rawFiles = new Set((await Promise.all(walks)).flat());
-    return [...rawFiles].filter((fn) => extensions.includes(path.extname(fn)));
+        });
+        yield* walked.filter((name) => extensions.includes(path.extname(name)));
+    }
 }
 
 export default async function main(argv) {
@@ -42,7 +52,9 @@ export default async function main(argv) {
     const extensions = asArray(args.x);
     const cmdline = args._;
 
-    let files = await enumerateFiles(entryPoints, extensions, ignoreFiles);
+    let files = await asyncIterToArray(
+        enumerateFiles(entryPoints, extensions, ignoreFiles),
+    );
 
     const child = childProcess.spawn(
         cmdline[0],
