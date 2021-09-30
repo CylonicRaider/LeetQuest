@@ -6,6 +6,16 @@ import minimist from "minimist";
 import path from "path";
 import process from "process";
 
+function singleToArray(value) {
+    return value == null ? [] : Array.isArray(value) ? value : [value];
+}
+
+async function asyncIterToArray(iterable) {
+    const result = [];
+    for await (const item of iterable) result.push(item);
+    return result;
+}
+
 function waitOnRawEvent(object, event, callback = null) {
     if (callback === null) callback = (x) => x;
 
@@ -18,16 +28,6 @@ function waitOnRawEvent(object, event, callback = null) {
             }
         });
     });
-}
-
-function asArray(value) {
-    return value == null ? [] : Array.isArray(value) ? value : [value];
-}
-
-async function asyncIterToArray(iterable) {
-    const result = [];
-    for await (const item of iterable) result.push(item);
-    return result;
 }
 
 export async function loadCache(location) {
@@ -70,10 +70,10 @@ export async function saveCache(location, state) {
 export default async function main(argv) {
     const args = minimist(argv);
     const cacheFile = args.c;
-    const globalFiles = asArray(args.g);
-    const entryPoints = asArray(args.e);
-    const ignoreFiles = asArray(args.i);
-    const extensions = asArray(args.x);
+    const globalFiles = singleToArray(args.g);
+    const entryPoints = singleToArray(args.e);
+    const ignoreFiles = singleToArray(args.i);
+    const extensions = singleToArray(args.x);
     const cmdline = args._;
 
     let state = await loadCache(cacheFile);
