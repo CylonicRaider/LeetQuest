@@ -100,7 +100,7 @@ export default async function main(argv) {
 
 if (isMain(import.meta)) {
     main(process.argv.slice(2)).catch((exc) => {
-        console.error(`ERROR: ${exc}`);
+        console.error("ERROR:", exc);
         process.exit(1);
     });
 }
