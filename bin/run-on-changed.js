@@ -30,6 +30,24 @@ async function asyncIterToArray(iterable) {
     return result;
 }
 
+export async function loadCache(location) {
+    if (!location) {
+        return {};
+    }
+    let data;
+    try {
+        data = await fs.readFile(location, "utf-8");
+    } catch (err) {
+        if (err.code == "ENOENT") return {};
+        throw err;
+    }
+    try {
+        return JSON.parse(data);
+    } catch (exc) {
+        return {};
+    }
+}
+
 export async function* enumerateFiles(entryPoints, extensions, ignoreFiles) {
     for (const ep of entryPoints) {
         if (!(await fs.stat(ep)).isDirectory()) {
@@ -44,17 +62,27 @@ export async function* enumerateFiles(entryPoints, extensions, ignoreFiles) {
     }
 }
 
+export async function saveCache(location, state) {
+    if (!location) return;
+    await fs.writeFile(location, JSON.stringify(state));
+}
+
 export default async function main(argv) {
     const args = minimist(argv);
-    const configFiles = asArray(args.c);
+    const cacheFile = args.c;
+    const globalFiles = asArray(args.g);
     const entryPoints = asArray(args.e);
     const ignoreFiles = asArray(args.i);
     const extensions = asArray(args.x);
     const cmdline = args._;
 
+    let state = await loadCache(cacheFile);
+
     let files = await asyncIterToArray(
         enumerateFiles(entryPoints, extensions, ignoreFiles),
     );
+
+    await saveCache(cacheFile, state);
 
     const child = childProcess.spawn(
         cmdline[0],
