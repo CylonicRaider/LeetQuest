@@ -62,6 +62,33 @@ export async function* enumerateFiles(entryPoints, extensions, ignoreFiles) {
     }
 }
 
+export async function* filterFiles(rawFiles, globalFiles, state) {
+    async function testFile(filename) {
+        if (!(filename in state)) return true;
+        const info = state[filename];
+        const stats = await fs.stat(filename);
+        return stats.mtimeMs !== info.mtime;
+    }
+
+    let forwardAll = false;
+    for (const filename of globalFiles) {
+        if (await testFile(filename)) {
+            forwardAll = true;
+            break;
+        }
+    }
+    for await (const filename of rawFiles) {
+        if (forwardAll || (await testFile(filename))) yield filename;
+    }
+}
+
+export async function recordFiles(files, globalFiles, state) {
+    for (const filename of files) {
+        const stats = await fs.stat(filename);
+        state[filename] = { mtime: stats.mtimeMs };
+    }
+}
+
 export async function saveCache(location, state) {
     if (!location) return;
     await fs.writeFile(location, JSON.stringify(state));
@@ -79,23 +106,28 @@ export default async function main(argv) {
     let state = await loadCache(cacheFile);
 
     let files = await asyncIterToArray(
-        enumerateFiles(entryPoints, extensions, ignoreFiles),
+        filterFiles(
+            enumerateFiles(entryPoints, extensions, ignoreFiles),
+            globalFiles,
+            state,
+        ),
     );
-
-    await saveCache(cacheFile, state);
 
     const child = childProcess.spawn(
         cmdline[0],
         cmdline.slice(1).concat(files),
         { stdio: "inherit" },
     );
-    return await waitOnRawEvent(child, "close", (code, signal) => {
-        if (code === 0) return 0;
+    await waitOnRawEvent(child, "close", (code, signal) => {
+        if (code === 0) return;
         throw new Error(
             "Child process " +
                 (signal ? `got signal ${signal}` : `exited with code ${code}`),
         );
     });
+
+    await recordFiles(files, globalFiles, state);
+    await saveCache(cacheFile, state);
 }
 
 if (isMain(import.meta)) {
