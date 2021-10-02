@@ -1,5 +1,7 @@
 import childProcess from "child_process";
+import crypto from "crypto";
 import isMain from "es-main";
+import { createReadStream } from "fs";
 import fs from "fs/promises";
 import ignoreWalk from "ignore-walk";
 import minimist from "minimist";
@@ -28,6 +30,12 @@ function waitOnRawEvent(object, event, callback = null) {
             }
         });
     });
+}
+
+async function hashStream(input, algorithm = "sha256") {
+    const hasher = crypto.createHash(algorithm).setEncoding("hex");
+    input.pipe(hasher);
+    return await waitOnRawEvent(hasher, "finish", () => hasher.read());
 }
 
 export async function loadCache(location) {
@@ -67,7 +75,10 @@ export async function* filterFiles(rawFiles, globalFiles, state) {
         if (!(filename in state)) return true;
         const info = state[filename];
         const stats = await fs.stat(filename);
-        return stats.mtimeMs !== info.mtime;
+        if (stats.mtimeMs !== info.mtime) return true;
+        const hash = await hashStream(createReadStream(filename), "sha256");
+        if (hash !== info.hash) return true;
+        return false;
     }
 
     let forwardAll = false;
@@ -85,7 +96,8 @@ export async function* filterFiles(rawFiles, globalFiles, state) {
 export async function recordFiles(files, globalFiles, state) {
     for (const filename of files) {
         const stats = await fs.stat(filename);
-        state[filename] = { mtime: stats.mtimeMs };
+        const hash = await hashStream(createReadStream(filename), "sha256");
+        state[filename] = { mtime: stats.mtimeMs, hash: hash };
     }
 }
 
