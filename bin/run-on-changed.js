@@ -12,12 +12,6 @@ function singleToArray(value) {
     return value == null ? [] : Array.isArray(value) ? value : [value];
 }
 
-async function asyncIterToArray(iterable) {
-    const result = [];
-    for await (const item of iterable) result.push(item);
-    return result;
-}
-
 function waitOnRawEvent(object, event, callback = null) {
     if (callback === null) callback = (x) => x;
 
@@ -56,21 +50,26 @@ export async function loadCache(location) {
     }
 }
 
-export async function* enumerateFiles(entryPoints, extensions, ignoreFiles) {
+export async function enumerateFiles(entryPoints, extensions, ignoreFiles) {
+    const result = [];
     for (const ep of entryPoints) {
         if (!(await fs.stat(ep)).isDirectory()) {
-            yield ep;
+            result.push(ep);
             continue;
         }
         const walked = await ignoreWalk({
             path: ep,
             ignoreFiles: ignoreFiles,
         });
-        yield* walked.filter((name) => extensions.includes(path.extname(name)));
+        const additions = walked.filter((name) =>
+            extensions.includes(path.extname(name)),
+        );
+        result.push(...additions);
     }
+    return result;
 }
 
-export async function* filterFiles(rawFiles, globalFiles, state) {
+export async function filterFiles(rawFiles, globalFiles, state) {
     async function testFile(filename) {
         if (!(filename in state)) return true;
         const info = state[filename];
@@ -81,16 +80,15 @@ export async function* filterFiles(rawFiles, globalFiles, state) {
         return false;
     }
 
-    let forwardAll = false;
     for (const filename of globalFiles) {
-        if (await testFile(filename)) {
-            forwardAll = true;
-            break;
-        }
+        if (await testFile(filename)) return rawFiles;
     }
-    for await (const filename of rawFiles) {
-        if (forwardAll || (await testFile(filename))) yield filename;
+
+    const result = [];
+    for (const filename of rawFiles) {
+        if (await testFile(filename)) result.push(filename);
     }
+    return result;
 }
 
 export async function recordFiles(files, globalFiles, state) {
@@ -117,12 +115,10 @@ export default async function main(argv) {
 
     let state = await loadCache(cacheFile);
 
-    let files = await asyncIterToArray(
-        filterFiles(
-            enumerateFiles(entryPoints, extensions, ignoreFiles),
-            globalFiles,
-            state,
-        ),
+    let files = await filterFiles(
+        await enumerateFiles(entryPoints, extensions, ignoreFiles),
+        globalFiles,
+        state,
     );
 
     const child = childProcess.spawn(
