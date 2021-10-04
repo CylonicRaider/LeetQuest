@@ -66,7 +66,13 @@ export async function enumerateFiles(entryPoints, extensions, ignoreFiles) {
         );
         result.push(...additions);
     }
-    return result;
+    return Array.from(new Set(result));
+}
+
+export function pruneCache(files, state) {
+    const remove = new Set(Object.keys(state));
+    for (const filename of files) remove.delete(filename);
+    for (const filename of remove) delete state[filename];
 }
 
 export async function filterFiles(rawFiles, globalFiles, state) {
@@ -113,13 +119,10 @@ export default async function main(argv) {
     const extensions = singleToArray(args.x);
     const cmdline = args._;
 
-    let state = await loadCache(cacheFile);
-
-    let files = await filterFiles(
-        await enumerateFiles(entryPoints, extensions, ignoreFiles),
-        globalFiles,
-        state,
-    );
+    const state = await loadCache(cacheFile);
+    const rawFiles = await enumerateFiles(entryPoints, extensions, ignoreFiles);
+    pruneCache(rawFiles, state);
+    const files = await filterFiles(rawFiles, globalFiles, state);
 
     const child = childProcess.spawn(
         cmdline[0],
