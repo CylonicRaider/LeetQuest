@@ -105,6 +105,7 @@ export async function filterFiles(rawFiles, globalFiles, state) {
         if (!(filename in state)) return true;
         const info = state[filename];
         const stats = await fs.stat(filename);
+        if (stats.size !== info.size) return true;
         if (stats.mtimeMs !== info.mtime) return true;
         const hash = await hashStream(createReadStream(filename), "sha256");
         if (hash !== info.hash) return true;
@@ -123,10 +124,14 @@ export async function filterFiles(rawFiles, globalFiles, state) {
 }
 
 export async function recordFiles(files, globalFiles, state) {
-    for (const filename of files) {
+    for (const filename of mergeArraySets(files, globalFiles)) {
         const stats = await fs.stat(filename);
         const hash = await hashStream(createReadStream(filename), "sha256");
-        state[filename] = { mtime: stats.mtimeMs, hash: hash };
+        state[filename] = {
+            size: stats.size,
+            mtime: stats.mtimeMs,
+            hash: hash,
+        };
     }
 }
 
