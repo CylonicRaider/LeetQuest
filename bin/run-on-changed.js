@@ -9,7 +9,7 @@ import path from "path";
 import process from "process";
 
 function argsToArray(...values) {
-    return [].concat(...values.filter((v) => v != null));
+    return [].concat(...values.filter((v) => v != null && v !== false));
 }
 
 function mergeArraySets(...arrays) {
@@ -148,6 +148,7 @@ export default async function main(argv) {
         paths: argsToArray(args.path, args.p),
         ignore: argsToArray(args.ignore, args.i),
         extensions: argsToArray(args.extension, args.x),
+        skipNone: argsToArray(args["skip-none"], args.r),
     };
     const configFiles = argsToArray(args.config, args.c);
     const cmdline = args._;
@@ -174,18 +175,20 @@ export default async function main(argv) {
     pruneCache(rawFiles, state);
     const files = await filterFiles(rawFiles, globalFiles, state);
 
-    const child = childProcess.spawn(
-        cmdline[0],
-        cmdline.slice(1).concat(files),
-        { stdio: "inherit" },
-    );
-    await waitOnRawEvent(child, "close", (code, signal) => {
-        if (code === 0) return;
-        throw new Error(
-            "Child process " +
-                (signal ? `got signal ${signal}` : `exited with code ${code}`),
+    if (files.length || !config.skipNone) {
+        const child = childProcess.spawn(
+            cmdline[0],
+            cmdline.slice(1).concat(files),
+            { stdio: "inherit" },
         );
-    });
+        await waitOnRawEvent(child, "close", (code, signal) => {
+            if (code === 0) return;
+            const detail = signal
+                ? `got signal ${signal}`
+                : `exited with code ${code}`;
+            throw new Error(`Child process ${detail}`);
+        });
+    }
 
     await recordFiles(files, globalFiles, state);
     await saveCache(cacheFile, state);
