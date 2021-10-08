@@ -1,0 +1,8 @@
+{
+    "cache": "node_modules/.cache/formatted.json",
+    "ignore": [".gitignore", ".prettierignore"],
+    "extensions": [".js", ".json", ".md", ".html", ".css"],
+    "paths": [".", ".prettierrc"],
+    "global": [".prettierrc"],
+    "skipNone": true
+}
