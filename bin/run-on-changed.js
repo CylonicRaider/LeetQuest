@@ -175,7 +175,7 @@ export default async function main(argv) {
     pruneCache(rawFiles, state);
     const files = await filterFiles(rawFiles, globalFiles, state);
 
-    if (files.length || !config.skipNone) {
+    if (files.length || !config.skipNone.length) {
         const child = childProcess.spawn(
             cmdline[0],
             cmdline.slice(1).concat(files),
