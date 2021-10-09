@@ -26,6 +26,9 @@ To invoke the code auto-formatter and linter — preferrably before every
 commit —, run `npm run cleanup`. The formatter and linter are available
 separately as `npm run format` and `npm run lint`, respectively.
 
+To format and/or lint the entire source code unconditionally, use
+`npm run format-full`, `npm run lint-full`, or `npm run cleanup-full` instead.
+
 ## License
 
 Code is licensed under MPL 2.0. Content is licensed under CC-BY-SA 3.0.
