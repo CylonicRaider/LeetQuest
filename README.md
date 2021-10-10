@@ -13,14 +13,19 @@ separately via `npm run build-maps`. It is only necessary when the
 version-controlled.
 
 **Running the server**: To run the game server, run `npm start` (remember to
-build the client if necessary). The server takes a single optional
-command-line parameter, viz. the name of a configuration file, which defaults
+build the client first if necessary). The server takes a single optional
+command-line argument, viz. the name of a configuration file, which defaults
 to `config.json`. The configuration file overrides the defaults supplied in
 `config.default.json`.
 
-Additional documentation is located in the `client` and `server` directories.
+Some additional documentation is located in the `client`, `server`, and
+`tools/maps` directories.
 
-### Contributing
+### Developing
+
+In development mode, the game server automatically rebuilds the client
+whenever its source files are changed. To use this mode, invoke
+`npm run start-dev`.
 
 To invoke the code auto-formatter and linter — preferrably before every
 commit —, run `npm run cleanup`. The formatter and linter are available
