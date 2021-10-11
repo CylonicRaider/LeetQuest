@@ -176,6 +176,11 @@ export default async function main(argv) {
     const files = await filterFiles(rawFiles, globalFiles, state);
 
     if (files.length || !config.skipNone.length) {
+        console.log(
+            `(Invoking ${cmdline[0]} on ${files.length} ` +
+                `file${files.length == 1 ? "" : "s"})`,
+        );
+
         const child = childProcess.spawn(
             cmdline[0],
             cmdline.slice(1).concat(files),
@@ -188,6 +193,8 @@ export default async function main(argv) {
                 : `exited with code ${code}`;
             throw new Error(`Child process ${detail}`);
         });
+    } else {
+        console.log("(Nothing to do)");
     }
 
     await recordFiles(files, globalFiles, state);
