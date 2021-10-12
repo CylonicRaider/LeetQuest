@@ -178,7 +178,7 @@ export default async function main(argv) {
     if (files.length || !config.skipNone.length) {
         console.log(
             `(Invoking ${cmdline[0]} on ${files.length} ` +
-                `file${files.length == 1 ? "" : "s"})`,
+                `file${files.length == 1 ? "" : "s"})\n`,
         );
 
         const child = childProcess.spawn(
