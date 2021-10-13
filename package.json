@@ -9,34 +9,34 @@
         "es-main": "^1.0.2",
         "express": "^4.17.1",
         "he": "^1.2.0",
-        "htmlparser2": "^7.1.1",
+        "htmlparser2": "^7.1.2",
         "ignore-walk": "^4.0.1",
         "jquery": "^3.6.0",
         "lodash-es": "^4.17.21",
         "merge": "^2.1.1",
         "minimist": "^1.2.5",
         "modernizr-esm": "^2.0.0",
-        "pino": "^6.13.2",
-        "pino-http": "^5.7.0",
-        "sanitize-html": "^2.4.0",
+        "pino": "^6.13.3",
+        "pino-http": "^5.8.0",
+        "sanitize-html": "^2.5.1",
         "websocket": "^1.0.34",
         "websocket-server": "ThisIsMissEm/node-websocket-server#v1.4.04"
     },
     "devDependencies": {
-        "@babel/preset-env": "^7.15.4",
+        "@babel/preset-env": "^7.15.8",
         "@trivago/prettier-plugin-sort-imports": "^2.0.4",
         "babel-loader": "^8.2.2",
         "copy-webpack-plugin": "^9.0.1",
-        "eslint": "^7.32.0",
+        "eslint": "^8.0.0",
         "eslint-import-resolver-webpack": "^0.13.1",
-        "eslint-plugin-import": "^2.24.2",
+        "eslint-plugin-import": "^2.25.2",
         "eslint-plugin-node": "^11.1.0",
-        "pino-pretty": "^7.0.0",
-        "prettier": "^2.3.2",
-        "webpack": "^5.52.0",
-        "webpack-bundle-analyzer": "^4.4.2",
-        "webpack-cli": "^4.8.0",
-        "webpack-dev-middleware": "^5.0.0",
+        "pino-pretty": "^7.0.1",
+        "prettier": "^2.4.1",
+        "webpack": "^5.58.2",
+        "webpack-bundle-analyzer": "^4.5.0",
+        "webpack-cli": "^4.9.0",
+        "webpack-dev-middleware": "^5.2.1",
         "webpack-merge": "^5.8.0"
     },
     "scripts": {
@@ -52,6 +52,6 @@
         "start-dev": "NODE_ENV=development node ./server/src/index.dev.js | pino-pretty -Hct"
     },
     "engines": {
-        "node": ">=10.0.0"
+        "node": ">=10"
     }
 }
