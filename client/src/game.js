@@ -21,7 +21,6 @@ import GameClient from "./gameclient.js";
 import InfoManager from "./infomanager.js";
 import Item from "./item.js";
 import log from "./lib/log.js";
-import WorldMap from "./map.js";
 import Mob from "./mob.js";
 import Mobs from "./mobs.js";
 import Npc from "./npc.js";
@@ -34,6 +33,7 @@ import Transition from "./transition.js";
 import Updater from "./updater.js";
 import { requestAnimFrame } from "./util.js";
 import Warrior from "./warrior.js";
+import WorldMap from "./worldmap.js";
 
 export default class Game {
     constructor(app) {
