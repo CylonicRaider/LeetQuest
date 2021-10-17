@@ -33,8 +33,12 @@ export default class Renderer {
         this.initFPS();
         this.tilesize = 16;
 
-        this.upscaledRendering =
-            this.context.imageSmoothingEnabled !== undefined;
+        if (this.context.imageSmoothingEnabled === undefined)
+            log.error(
+                "imageSmoothingEnabled not supported; " +
+                    "graphics quality may be degraded",
+            );
+        this.upscaledRendering = true;
         this.supportsSilhouettes = this.upscaledRendering;
 
         this.rescale();

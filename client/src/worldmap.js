@@ -10,13 +10,13 @@ import log from "./lib/log.js";
 import { isInt } from "./util.js";
 
 export default class WorldMap {
-    constructor(loadMultiTilesheets, game) {
+    constructor(game) {
         this.game = game;
         this.data = [];
         this.isLoaded = false;
         this.tilesetsLoaded = false;
         this.mapLoaded = false;
-        this.loadMultiTilesheets = loadMultiTilesheets;
+        this.loadMultiTilesheets = false;
 
         this._loadMap();
         this._initTilesets();
@@ -47,23 +47,12 @@ export default class WorldMap {
     }
 
     _initTilesets() {
-        var tileset1, tileset2, tileset3;
+        var tileset;
 
-        if (!this.loadMultiTilesheets) {
-            this.tilesetCount = 1;
-            tileset1 = this._loadTileset("img/1/tilesheet.png");
-        } else {
-            if (this.game.renderer.mobile || this.game.renderer.tablet) {
-                this.tilesetCount = 1;
-                tileset2 = this._loadTileset("img/2/tilesheet.png");
-            } else {
-                this.tilesetCount = 2;
-                tileset2 = this._loadTileset("img/2/tilesheet.png");
-                tileset3 = this._loadTileset("img/3/tilesheet.png");
-            }
-        }
+        this.tilesetCount = 1;
+        tileset = this._loadTileset("img/1/tilesheet.png");
 
-        this.tilesets = [tileset1, tileset2, tileset3];
+        this.tilesets = [tileset];
     }
 
     _initMap(map) {

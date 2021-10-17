@@ -194,7 +194,7 @@ export default class Game {
     }
 
     loadMap() {
-        this.map = new WorldMap(!this.renderer.upscaledRendering, this);
+        this.map = new WorldMap(this);
 
         this.map.ready(() => {
             log.info("Map loaded.");
