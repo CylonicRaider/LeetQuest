@@ -1812,14 +1812,14 @@ footer div {
     .upscaled .ribbon .bottom,
     .upscaled #about .img,
     .upscaled .ext-link {
-        background-image: url("../img/3/spritesheet.png");
+        background-image: url("../img/1/spritesheet.png");
     }
     .upscaled #bar-container,
     .upscaled #healthbar,
     .upscaled .barbutton,
     .upscaled #chatbox,
     .upscaled #population {
-        background-image: url("../img/3/barsheet.png");
+        background-image: url("../img/1/barsheet.png");
     }
     .upscaled #achievements,
     .upscaled #achievements li,
@@ -1829,7 +1829,7 @@ footer div {
     .upscaled .achievement-sharing a,
     .upscaled #previous,
     .upscaled #next {
-        background: url("../img/3/achievements.png");
+        background: url("../img/1/achievements.png");
     }
 
     body {
@@ -1853,10 +1853,10 @@ footer div {
                 from(rgba(0, 0, 0, 0)),
                 to(rgba(0, 0, 0, 1))
             ),
-            url("../img/3/wood2.png") no-repeat 1587px 138px,
-            url("../img/3/wood2.png") no-repeat 51px 519px,
-            url("../img/3/wood3.png") no-repeat 228px 219px,
-            url("../img/3/wood.png") repeat, #000;
+            url("../img/1/wood2.png") no-repeat 1587px 138px,
+            url("../img/1/wood2.png") no-repeat 51px 519px,
+            url("../img/1/wood3.png") no-repeat 228px 219px,
+            url("../img/1/wood.png") repeat, #000;
         background-size: auto, 15px auto, 15px auto, 60px auto, 384px;
     }
     #logo,
@@ -2032,7 +2032,7 @@ footer div {
     }
     #canvasborder {
         padding: 15px;
-        background: url("../img/3/border.png") no-repeat;
+        background: url("../img/1/border.png") no-repeat;
     }
     #canvas {
         width: 100%;
@@ -2586,14 +2586,14 @@ footer div {
     .upscaled .ribbon .bottom,
     .upscaled #about .img,
     .upscaled .ext-link {
-        background-image: url("../img/2/spritesheet.png");
+        background-image: url("../img/1/spritesheet.png");
     }
     .upscaled #bar-container,
     .upscaled #healthbar,
     .upscaled .barbutton,
     .upscaled #chatbox,
     .upscaled #population {
-        background-image: url("../img/2/barsheet.png");
+        background-image: url("../img/1/barsheet.png");
     }
     .upscaled #achievements,
     .upscaled #achievements li,
@@ -2603,7 +2603,7 @@ footer div {
     .upscaled .achievement-sharing a,
     .upscaled #previous,
     .upscaled #next {
-        background: url("../img/2/achievements.png");
+        background: url("../img/1/achievements.png");
     }
 
     body {
@@ -2624,7 +2624,7 @@ footer div {
                 from(rgba(0, 0, 0, 0)),
                 to(rgba(0, 0, 0, 1))
             ),
-            url("../img/2/wood.png") repeat, #000;
+            url("../img/1/wood.png") repeat, #000;
         background-size: auto, 256px;
     }
     #logo,
@@ -2800,7 +2800,7 @@ footer div {
     }
     #canvasborder {
         padding: 10px;
-        background: url("../img/2/border.png") no-repeat;
+        background: url("../img/1/border.png") no-repeat;
     }
     #canvas {
         width: 100%;
@@ -3375,14 +3375,14 @@ footer div {
     .upscaled .ribbon .bottom,
     .upscaled #about .img,
     .upscaled .ext-link {
-        background-image: url("../img/2/spritesheet.png");
+        background-image: url("../img/1/spritesheet.png");
     }
     .upscaled #bar-container,
     .upscaled #healthbar,
     .upscaled .barbutton,
     .upscaled #chatbox,
     .upscaled #population {
-        background-image: url("../img/2/barsheet.png");
+        background-image: url("../img/1/barsheet.png");
     }
     .upscaled #achievements,
     .upscaled #achievements li,
@@ -3392,7 +3392,7 @@ footer div {
     .upscaled .achievement-sharing a,
     .upscaled #previous,
     .upscaled #next {
-        background: url("../img/2/achievements.png");
+        background: url("../img/1/achievements.png");
     }
 
     body {
@@ -3413,7 +3413,7 @@ footer div {
                 from(rgba(0, 0, 0, 0)),
                 to(rgba(0, 0, 0, 1))
             ),
-            url("../img/2/wood.png") repeat, #000;
+            url("../img/1/wood.png") repeat, #000;
         background-size: auto, 256px;
     }
     #logo,
@@ -3589,7 +3589,8 @@ footer div {
     }
     #canvasborder {
         padding: 10px;
-        background: url("../img/2/border.png") no-repeat;
+        background: url("../img/1/border.png") no-repeat;
+        background-size: 100%;
     }
     #canvas {
         width: 100%;
