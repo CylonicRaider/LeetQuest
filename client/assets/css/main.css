@@ -2033,6 +2033,7 @@ footer div {
     #canvasborder {
         padding: 15px;
         background: url("../img/1/border.png") no-repeat;
+        background-size: 100%;
     }
     #canvas {
         width: 100%;
