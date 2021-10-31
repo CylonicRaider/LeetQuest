@@ -12,5 +12,5 @@ All of the music in LeetQuest/BrowserQuest comes from
     [lavaland](https://soundcloud.com/gyrowolf/gyro-scene002-ogg)
 -   [Dan Tilden](https://www.dantilden.com):
     [forest](https://soundcloud.com/freakified/what-dangers-await-campus-map)
--   [Joel Day](httsp://blog.dayjo.org):
+-   [Joel Day](https://blog.dayjo.org):
     [village](https://blog.dayjo.org/?p=335)

@@ -119,7 +119,7 @@ export class MultiVersionWebsocketServer extends Server {
         this._statics = buildStaticApp();
         this._httpServer = _createServer((request, response) => {
             httpLog(request, response);
-            const path = new URL(request.url, `http://${request.headers.host}`)
+            const path = new URL(request.url, `ws://${request.headers.host}`)
                 .pathname;
             switch (path) {
                 case "/status":
@@ -157,8 +157,7 @@ export class MultiVersionWebsocketServer extends Server {
         });
 
         this._httpServer.on("upgrade", (req, socket, head) => {
-            const path = new URL(req.url, `http://${req.headers.host}`)
-                .pathname;
+            const path = new URL(req.url, `ws://${req.headers.host}`).pathname;
             if (path !== "/dispatch" && path !== "/game") {
                 socket.close();
                 return;

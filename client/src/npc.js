@@ -30,7 +30,7 @@ const NpcTalk = {
         "It's all happening in a single web page! Isn't it crazy?",
         "It's all made possible thanks to WebSockets.",
         "I don't know much about it, after all I'm just a program.",
-        'Why don&#x27;t you read this <a target="_blank" href="http://hacks.mozilla.org/2012/03/browserquest/">blog post</a> and learn all about it?',
+        'Why don&#x27;t you read this <a target="_blank" href="https://hacks.mozilla.org/2012/03/browserquest/">blog post</a> and learn all about it?',
     ],
 
     villager: [
@@ -137,7 +137,7 @@ const NpcTalk = {
     octocat: [
         "Welcome to LeetQuest!",
         "Want to see the source code?",
-        'Check out <a target="_blank" href="http://github.com/CylonicRaider/LeetQuest">the repository on GitHub</a>',
+        'Check out <a target="_blank" href="https://github.com/CylonicRaider/LeetQuest">the repository on GitHub</a>',
     ],
 
     coder: [

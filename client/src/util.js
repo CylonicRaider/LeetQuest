@@ -4,7 +4,7 @@ export function isInt(n) {
 
 export const TRANSITIONEND = "transitionend webkitTransitionEnd oTransitionEnd";
 
-// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// https://paulirish.com/2011/requestanimationframe-for-smart-animating/
 export const requestAnimFrame =
     window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
