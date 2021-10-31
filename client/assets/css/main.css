@@ -2393,7 +2393,7 @@ footer div {
         margin-top: 52px;
     }
     #credits h1 span.title {
-        max-width: 300px;
+        max-width: 450px;
         display: inline-block;
         line-height: 39px;
         margin-top: -90px;
@@ -3163,7 +3163,7 @@ footer div {
         margin-top: 40px;
     }
     #credits h1 span.title {
-        max-width: 200px;
+        max-width: 300px;
         display: inline-block;
         line-height: 26px;
         margin-top: -60px;
@@ -3950,7 +3950,7 @@ footer div {
         font-size: 24px;
     }
     #credits h1 span.title {
-        max-width: 200px;
+        max-width: 300px;
         display: inline-block;
         line-height: 26px;
         margin-top: -60px;
@@ -4689,7 +4689,7 @@ footer div {
         margin-top: 20px;
     }
     #credits h1 span.title {
-        max-width: 100px;
+        max-width: 150px;
         display: inline-block;
         line-height: 13px;
         margin-top: -30px;
