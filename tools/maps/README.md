@@ -1,4 +1,4 @@
-# BrowserQuest map exporter
+# LeetQuest/BrowserQuest map exporter
 
 **Disclaimer:** The exporting process may not be the most painless, quick, or
 efficient.

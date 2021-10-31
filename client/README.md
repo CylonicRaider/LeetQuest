@@ -1,4 +1,4 @@
-# BrowserQuest client
+# LeetQuest client
 
 The client source code is located inside this directory, along with a built
 version of the game map. The client is (fixedly) configured to derive the game

@@ -1,6 +1,6 @@
 # Background music
 
-All of the music in BrowserQuest comes from
+All of the music in LeetQuest/BrowserQuest comes from
 [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) sources.
 
 -   [Aaron Krogh](https://soundcloud.com/aaron-anderson-11):

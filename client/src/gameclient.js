@@ -86,10 +86,10 @@ export default class GameClient {
                     this.dispatched_callback(reply.host, reply.port);
                 } else if (reply.status === "FULL") {
                     alert(
-                        "BrowserQuest is currently at maximum player population. Please retry later.",
+                        "LeetQuest is currently at maximum player population. Please retry later.",
                     );
                 } else {
-                    alert("Unknown error while connecting to BrowserQuest.");
+                    alert("Unknown error while connecting to LeetQuest.");
                 }
             };
         } else {
@@ -127,7 +127,7 @@ export default class GameClient {
                         );
                     } else {
                         this.disconnected_callback(
-                            "The connection to BrowserQuest has been lost",
+                            "The connection to LeetQuest has been lost",
                         );
                     }
                 }

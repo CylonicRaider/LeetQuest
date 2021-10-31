@@ -18,7 +18,7 @@ function main(config) {
         ),
         worlds = [];
 
-    log.info("Starting BrowserQuest game server...");
+    log.info("Starting LeetQuest game server...");
 
     server.onConnect((connection) => {
         let world; // the one in which the player will be spawned

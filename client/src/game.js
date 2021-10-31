@@ -878,9 +878,9 @@ export default class Game {
                     this.player.getSpriteName(),
                     this.player.getWeaponName(),
                 );
-                this.showNotification("Welcome to BrowserQuest!");
+                this.showNotification("Welcome to LeetQuest!");
             } else {
-                this.showNotification("Welcome back to BrowserQuest!");
+                this.showNotification("Welcome back to LeetQuest!");
                 this.storage.setPlayerName(name);
             }
 

@@ -1,4 +1,4 @@
-# BrowserQuest server
+# LeetQuest server
 
 This directory contains the server source code, along with a built version of
 the game map.

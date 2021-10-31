@@ -27,7 +27,7 @@ function initApp() {
         var alert = document.createElement("div");
         alert.className = "alert";
         const alertMsg = document.createTextNode(
-            "You need to enable cookies/localStorage to play BrowserQuest",
+            "You need to enable cookies/localStorage to play LeetQuest",
         );
         alert.appendChild(alertMsg);
 
