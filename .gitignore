@@ -1,8 +1,7 @@
-node_modules
-/dist
-build.txt
-config_build.json
-config_local*
+node_modules/
+/dist/
+
+/config.json
+
 .DS_Store
 *.swp
-/config.json
