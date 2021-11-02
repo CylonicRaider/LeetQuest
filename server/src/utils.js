@@ -1,11 +1,10 @@
 import he from "he";
-import sanitizeHtml from "sanitize-html";
 
 import { Orientations } from "../../shared/js/gametypes.js";
 
 export function sanitize(string) {
-    // Strip unsafe tags, then escape as html entities.
-    return he.encode(sanitizeHtml(string));
+    // Input model: Plain text. Output model: Equivalent HTML.
+    return he.encode(string);
 }
 
 export function random(range) {
