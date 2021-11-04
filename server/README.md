@@ -15,12 +15,12 @@ The following variables are defined:
 
 -   `host`: The IP address to listen on. Defaults to all interfaces.
 -   `port`: The port to listen on. The default is `8000`.
--   `world-count`: The amount of (parallel) game worlds to maintain.
+-   `world_count`: The amount of (parallel) game worlds to maintain.
     Defaults to `5`.
--   `world-capacity`: How many players to allow per world. Defaults to `200`.
+-   `world_capacity`: How many players to allow per world. Defaults to `200`.
 -   `map`: Path of the `world_server.json` game map file. The default map is
     shipped along with the source code.
--   `log-level`: Logging level to use, as a string understood by Pino.
+-   `log_level`: Logging level to use, as a string understood by Pino.
     Defaults to `info`.
 
 ## Monitoring
