@@ -137,6 +137,7 @@ export async function recordFiles(files, globalFiles, state) {
 
 export async function saveCache(location, state) {
     if (!location) return;
+    await fs.mkdir(path.dirname(location), { recursive: true });
     await fs.writeFile(location, JSON.stringify(state));
 }
 
